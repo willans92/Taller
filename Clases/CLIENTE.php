@@ -26,7 +26,7 @@ class CLIENTE {
 		$this->id_empresa = $id_empresa;
 	}
 
-	function cargar($resultado){
+	function rellenar($resultado){
 		if ($resultado->num_rows > 0) {
 			$lista=array();
 			while($row = $resultado->fetch_assoc()) {
@@ -40,7 +40,7 @@ class CLIENTE {
 				$cliente->Telefono_Celular=$row['Telefono_Celular']==null?"":$row['Telefono_Celular'];
 				$cliente->Ci=$row['Ci']==null?"":$row['Ci'];
 				$cliente->id_empresa=$row['id_empresa']==null?"":$row['id_empresa'];
-				$lista[]=$empresa;
+				$lista[]=$cliente;
 			}
 			return $lista;
 		}else{

@@ -14,7 +14,7 @@ class TRABAJO {
 		$this->costo = $costo;
 	}
 
-	function cargar($resultado){
+	function rellenar($resultado){
 		if ($resultado->num_rows > 0) {
 			$lista=array();
 			while($row = $resultado->fetch_assoc()) {
@@ -22,7 +22,7 @@ class TRABAJO {
 				$trabajo->id_trabajo=$row['id_trabajo']==null?"":$row['id_trabajo'];
 				$trabajo->descripcion=$row['descripcion']==null?"":$row['descripcion'];
 				$trabajo->costo=$row['costo']==null?"":$row['costo'];
-				$lista[]=$empresa;
+				$lista[]=$trabajo;
 			}
 			return $lista;
 		}else{

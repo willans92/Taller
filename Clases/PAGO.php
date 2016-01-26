@@ -22,7 +22,7 @@ class PAGO {
 		$this->id_personal = $id_personal;
 	}
 
-	function cargar($resultado){
+	function rellenar($resultado){
 		if ($resultado->num_rows > 0) {
 			$lista=array();
 			while($row = $resultado->fetch_assoc()) {
@@ -34,7 +34,7 @@ class PAGO {
 				$pago->tipo=$row['tipo']==null?"":$row['tipo'];
 				$pago->descripcion=$row['descripcion']==null?"":$row['descripcion'];
 				$pago->id_personal=$row['id_personal']==null?"":$row['id_personal'];
-				$lista[]=$empresa;
+				$lista[]=$pago;
 			}
 			return $lista;
 		}else{

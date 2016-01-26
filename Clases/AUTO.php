@@ -26,7 +26,7 @@ class AUTO {
 		$this->id_cliente = $id_cliente;
 	}
 
-	function cargar($resultado){
+	function rellenar($resultado){
 		if ($resultado->num_rows > 0) {
 			$lista=array();
 			while($row = $resultado->fetch_assoc()) {
@@ -40,7 +40,7 @@ class AUTO {
 				$auto->id_vehiculo=$row['id_vehiculo']==null?"":$row['id_vehiculo'];
 				$auto->id_marca=$row['id_marca']==null?"":$row['id_marca'];
 				$auto->id_cliente=$row['id_cliente']==null?"":$row['id_cliente'];
-				$lista[]=$empresa;
+				$lista[]=$auto;
 			}
 			return $lista;
 		}else{

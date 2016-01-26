@@ -12,14 +12,14 @@ class ACCESORIO_REPARACION {
 		$this->id_accesorio = $id_accesorio;
 	}
 
-	function cargar($resultado){
+	function rellenar($resultado){
 		if ($resultado->num_rows > 0) {
 			$lista=array();
 			while($row = $resultado->fetch_assoc()) {
 				$accesorio_reparacion=new ACCESORIO_REPARACION();
 				$accesorio_reparacion->id_reparacion=$row['id_reparacion']==null?"":$row['id_reparacion'];
 				$accesorio_reparacion->id_accesorio=$row['id_accesorio']==null?"":$row['id_accesorio'];
-				$lista[]=$empresa;
+				$lista[]=$accesorio_reparacion;
 			}
 			return $lista;
 		}else{

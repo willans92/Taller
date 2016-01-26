@@ -12,14 +12,14 @@ class VEHICULO {
 		$this->descripcion = $descripcion;
 	}
 
-	function cargar($resultado){
+	function rellenar($resultado){
 		if ($resultado->num_rows > 0) {
 			$lista=array();
 			while($row = $resultado->fetch_assoc()) {
 				$vehiculo=new VEHICULO();
 				$vehiculo->id_vehiculo=$row['id_vehiculo']==null?"":$row['id_vehiculo'];
 				$vehiculo->descripcion=$row['descripcion']==null?"":$row['descripcion'];
-				$lista[]=$empresa;
+				$lista[]=$vehiculo;
 			}
 			return $lista;
 		}else{

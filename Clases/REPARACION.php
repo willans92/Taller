@@ -28,7 +28,7 @@ class REPARACION {
 		$this->id_personal = $id_personal;
 	}
 
-	function cargar($resultado){
+	function rellenar($resultado){
 		if ($resultado->num_rows > 0) {
 			$lista=array();
 			while($row = $resultado->fetch_assoc()) {
@@ -43,7 +43,7 @@ class REPARACION {
 				$reparacion->total=$row['total']==null?"":$row['total'];
 				$reparacion->estado=$row['estado']==null?"":$row['estado'];
 				$reparacion->id_personal=$row['id_personal']==null?"":$row['id_personal'];
-				$lista[]=$empresa;
+				$lista[]=$reparacion;
 			}
 			return $lista;
 		}else{

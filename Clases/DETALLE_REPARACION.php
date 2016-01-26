@@ -12,14 +12,14 @@ class DETALLE_REPARACION {
 		$this->id_trabajos = $id_trabajos;
 	}
 
-	function cargar($resultado){
+	function rellenar($resultado){
 		if ($resultado->num_rows > 0) {
 			$lista=array();
 			while($row = $resultado->fetch_assoc()) {
 				$detalle_reparacion=new DETALLE_REPARACION();
 				$detalle_reparacion->id_reparacion=$row['id_reparacion']==null?"":$row['id_reparacion'];
 				$detalle_reparacion->id_trabajos=$row['id_trabajos']==null?"":$row['id_trabajos'];
-				$lista[]=$empresa;
+				$lista[]=$detalle_reparacion;
 			}
 			return $lista;
 		}else{

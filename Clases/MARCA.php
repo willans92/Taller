@@ -12,14 +12,14 @@ class MARCA {
 		$this->descripcion = $descripcion;
 	}
 
-	function cargar($resultado){
+	function rellenar($resultado){
 		if ($resultado->num_rows > 0) {
 			$lista=array();
 			while($row = $resultado->fetch_assoc()) {
 				$marca=new MARCA();
 				$marca->id_marca=$row['id_marca']==null?"":$row['id_marca'];
 				$marca->descripcion=$row['descripcion']==null?"":$row['descripcion'];
-				$lista[]=$empresa;
+				$lista[]=$marca;
 			}
 			return $lista;
 		}else{
