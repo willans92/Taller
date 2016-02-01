@@ -4,7 +4,6 @@
         <meta charset="UTF-8">
         <title>LOGIN</title>
         <link href="Estilo/ESTILO.css" rel="stylesheet" type="text/css"/>
-        <link href="Estilo/Responsive.css" rel="stylesheet" type="text/css" media/>
         <script src="Script/Plugin/jquery-2.1.3.min.js" type="text/javascript"></script>
         <script src="Script/Plugin/jquery-ui.js" type="text/javascript"></script>
         <script src="Script/Plugin/HERRAMIENTAS.js" type="text/javascript"></script>
@@ -27,7 +26,6 @@
             <div class='centrar'>
                 <button onclick='entrar("")' class="grande">ENTRAR</button> 
             </div>
-            
         </div>
     </body>
 </html>

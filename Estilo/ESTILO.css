@@ -129,9 +129,11 @@ button{
 }
 .popup{
     background: white;
-    border: solid medium appworkspace;
+    box-shadow: 0 0 10px 1px black;
     padding: 10px 20px;
+    color: black;
     display:none;
+    border-radius: 4px;
 }
 .alineacionIzquierda{
     float: left;
@@ -191,6 +193,7 @@ button{
 }
 .vistafoto{
     width: 25px;
+    cursor: pointer;
 }
 .vistafoto:hover{
     width: 50px;
@@ -396,7 +399,7 @@ div#formulario {
     position: relative;
     font-family: cursive;
     display: none;
-    top: -319px;
+    top: -321px;
     transform: rotate(-90deg);
 }
 
@@ -422,10 +425,11 @@ div#formulario {
     border: solid 3px;
     left: -240px;
 }
-div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa,#cuerpoListadoEmpleado {
+div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa,#cuerpoListadoEmpleado,#cuerpoEmpleadoPago {
     position: absolute;
     top:295px;
     left:330px;
+    z-index: 0;
     width:10px;
     height:10px;
     display: none;
@@ -434,4 +438,13 @@ div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa,#cuerpoLi
     width: 80px;
     height: 80px;
     margin-left: 36px;
+}
+#tablaEmpleado,#tablaEmpleadoSueldo,#tablaOtroPago{
+    height: 360px;
+}
+#tablaDetallePago{
+    height: 140px;
+}
+#popPagoSueldo{
+    width: 470px;
 }

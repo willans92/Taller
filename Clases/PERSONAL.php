@@ -1,5 +1,4 @@
 <?php
-
 class PERSONAL {
 
     var $id_personal;
@@ -12,7 +11,7 @@ class PERSONAL {
     var $fecha_ingreso;
     var $cuenta;
     var $contrasena;
-    var $sueldo;
+    var $sueldo=0;
     var $rol;
     var $id_empresa;
     var $estado;
@@ -24,6 +23,7 @@ class PERSONAL {
     }
 
     function contructor($id_personal, $foto, $carnet, $nombre, $direccion, $correo, $cumpleano, $fecha_ingreso, $cuenta, $contrasena, $sueldo, $rol, $id_empresa, $estado, $fecha_retirado) {
+                
         $this->id_personal = $id_personal;
         $this->foto = $foto;
         $this->carnet = $carnet;
@@ -74,6 +74,50 @@ class PERSONAL {
         $result = $this->CON->consulta($consulta);
         return $this->rellenar($result);
     }
+    function BuscarPersonal($text,$estado) {
+        $consulta = "select * from taller.PERSONAL where PERSONAL.carnet like '%$text%' and PERSONAL.nombre like '%$text%' and PERSONAL.cuenta like '%$text%' and PERSONAL.estado='$estado'";
+        $result = $this->CON->consulta($consulta);
+        return $this->rellenar($result);
+    }
+    function BuscarPersonalAPagar($text,$estado,$ano,$mes) {
+        $havin="";
+        if($estado==="PAGADO"){
+            $havin="sum(pago.monto)=personal.sueldo";
+        }else{
+            $havin="sum(pago.monto)<personal.sueldo";
+        }
+        $consulta = "select personal.carnet,personal.nombre,personal.sueldo,personal.id_personal,sum(pago.monto) as pagado, max(pago.fecha) as ultimoPago 
+                    from taller.pago, taller.personal
+                    where pago.id_personal=1 
+                        and pago.estado='ACTIVO'
+                        and YEAR(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y'))=$ano
+                        and month(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y')) =$mes
+                        and personal.carnet like '%$text%' and personal.nombre like '%$text%'
+                        and personal.id_personal=pago.id_personal
+                    group by personal.carnet,personal.nombre,personal.sueldo,personal.id_personal
+                    having $havin";
+        $result = $this->CON->consulta($consulta);
+        if ($result->num_rows > 0) {
+            $lista = array();
+            while ($row = $result->fetch_assoc()) {
+                $personal = array();
+                $monto= $row['pagado'] == null ? 0 : $row['pagado'];
+                $sueldo= $row['sueldo'] == null ? 0 : $row['sueldo'];
+                $personal['id_personal'] = $row['id_personal'] == null ? "" : $row['id_personal'];
+                $personal['carnet'] = $row['carnet'] == null ? "" : $row['carnet'];
+                $personal['nombre'] = $row['nombre'] == null ? "" : $row['nombre'];
+                $personal['sueldo'] =$sueldo;
+                $personal['pagado'] = $row['pagado'] == null ? "" : $row['pagado'];
+                $personal['saldo'] = $sueldo-$monto;
+                $personal['ultimoPago'] = $row['ultimoPago'] == null ? "" : $row['ultimoPago'];
+                $lista[] = $personal;
+            }
+            return $lista;
+        } else {
+            return null;
+        }
+    }
+    
 
     function buscarXID($id) {
         $consulta = "select * from taller.PERSONAL where id_personal=$id";
@@ -86,26 +130,30 @@ class PERSONAL {
     }
 
     function modificar($id_personal) {
-        $consulta = "update taller.PERSONAL set id_personal =" . $this->id_personal . ", foto ='" . $this->foto . "', carnet ='" . $this->carnet . "', nombre ='" . $this->nombre . "', direccion ='" . $this->direccion . "', correo ='" . $this->correo . "', cumpleano ='" . $this->cumpleano . "', fecha_ingreso ='" . $this->fecha_ingreso . "', cuenta ='" . $this->cuenta . "', contrasena ='" . $this->contrasena . "', sueldo =" . $this->sueldo . ", rol ='" . $this->rol . "', id_empresa =" . $this->id_empresa . ", estado ='" . $this->estado . "', fecha_retirado ='" . $this->fecha_retirado . "' where id_personal=" . $id_personal;
-        $result = $this->CON->consulta($consulta);
-        return $ret['cant'];
+        $contra="";
+        if(!$this->contrasena==""){
+            $contra=", contrasena =MD5('" . $this->contrasena . "')";
+        }
+        $consulta = "update taller.PERSONAL set fecha_retirado ='" . $this->fecha_retirado . "', foto ='" . $this->foto . "', carnet ='" . $this->carnet . "', nombre ='" . $this->nombre . "', direccion ='" . $this->direccion . "', correo ='" . $this->correo . "' $contra, sueldo =" . $this->sueldo . ", rol ='" . $this->rol . "',estado ='" . $this->estado . "' where id_personal=" . $id_personal;
+        $result = $this->CON->manipular($consulta);
+        return $result;
     }
 
     function insertar() {
-        $consulta = "insert into taller.PERSONAL(id_personal, foto, carnet, nombre, direccion, correo, cumpleano, fecha_ingreso, cuenta, contrasena, sueldo, rol, id_empresa, estado, fecha_retirado) values(" . $this->id_personal . ",'" . $this->foto . "','" . $this->carnet . "','" . $this->nombre . "','" . $this->direccion . "','" . $this->correo . "','" . $this->cumpleano . "','" . $this->fecha_ingreso . "','" . $this->cuenta . "','" . $this->contrasena . "'," . $this->sueldo . ",'" . $this->rol . "'," . $this->id_empresa . ",'" . $this->estado . "','" . $this->fecha_retirado . "')";
+        $consulta = "insert into taller.PERSONAL(id_personal, foto, carnet, nombre, direccion, correo, cumpleano, fecha_ingreso, cuenta, contrasena, sueldo, rol, id_empresa, estado, fecha_retirado) values(" . $this->id_personal . ",'" . $this->foto . "','" . $this->carnet . "','" . $this->nombre . "','" . $this->direccion . "','" . $this->correo . "','" . $this->cumpleano . "','" . $this->fecha_ingreso . "','" . $this->cuenta . "',MD5('$this->contrasena')," . $this->sueldo . ",'" . $this->rol . "'," . $this->id_empresa . ",'ACTIVO','" . $this->fecha_retirado . "')";
         $resultado = $this->CON->consulta($consulta);
         $consulta = "SELECT LAST_INSERT_ID() as id";
         $resultado = $this->CON->consulta($consulta);
         return $resultado->fetch_assoc()['id'];
     }
     function logear($cuenta,$contrasena) {
-        $consulta = "select count(*) as cant from taller.PERSONAL where cuenta='$cuenta' and contrasena='$contrasena'";
+        $consulta = "select count(*) as cant from taller.PERSONAL where cuenta='$cuenta' and contrasena=MD5('$contrasena')";
         $result = $this->CON->consulta($consulta);
         $empresa = $result->fetch_assoc()['cant'];
         return $empresa;
     }
     function estadoUsuario($cuenta,$contrasena) {
-        $consulta = "select count(*) as cant from taller.PERSONAL where cuenta='$cuenta' and contrasena='$contrasena' and estado='ACTIVO'";
+        $consulta = "select count(*) as cant from taller.PERSONAL where cuenta='$cuenta' and contrasena=MD5('$contrasena') and estado='ACTIVO'";
         $result = $this->CON->consulta($consulta);
         $empresa = $result->fetch_assoc()['cant'];
         return $empresa;

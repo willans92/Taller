@@ -1,10 +1,10 @@
 <?php
 
 class CONN {
-   var $servername = "localhost";
+   var $servername = "127.0.0.1";
    var $username = "root";
    var $password = "";
-   var $dbname="chiquifest";
+   var $dbname="eldebatedegusto";
    var $conn;
    var $estado;
    
@@ -54,5 +54,8 @@ class CONN {
    }
    function rollback(){
        $this->conn->rollback();
+   }
+   function closed(){
+  mysql_close($conn);
    }
 }
