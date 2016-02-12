@@ -1,3 +1,4 @@
+var imagenCargando="../Imagen/cargando.gif";
 (function (a) {
     $.fn.extend({
         visible: function (tipo) {
@@ -50,6 +51,7 @@
             $(this).find("input").css("background","white");
             $(this).find("input[type=number]").val(0);
             $(this).find("select option:eq(0)").attr("selected",true);
+            $(this).find(".fecha").val(fechaActual());
         },
         
         centrar: function () {
@@ -342,11 +344,12 @@ var imagenAModificar;
 function cargarImagen(input, tipo) {
     if (tipo === 1 || tipo === "1") {
         imagenAModificar = $(input);
+        $("body").append("<input type='file' onchange='cargarImagen(this,2)' id='fotocargar' style='display: none;'/><canvas id='canvas' style='display: none;'></canvas>");
         $('#fotocargar').click();
         return;
     }
     if (input.files && input.files[0]) {
-        $("#cargando").visible();
+        cargando(true);
         var reader = new FileReader();
         reader.onload = function (e) {
             var canvas = document.getElementById("canvas");
@@ -357,12 +360,112 @@ function cargarImagen(input, tipo) {
                 canvas.height = 300;
                 ctx.drawImage(img, 0, 0, 300, 300);
                 imagenAModificar.attr("src", canvas.toDataURL(input.files[0].type));
-                $("#cargando").ocultar();
+                cargando(false);
+                $("#fotocargar").remove();
+                $("#canvas").remove();
             };
             img.src = reader.result;
         };
         reader.readAsDataURL(input.files[0]);
     }
 }
-
+function tuplaSeleccionada(tabla){
+    var seleccionado = "";
+    var lista = $("#"+tabla+" tbody tr");
+    for (var i = 0; i < lista.length; i++) {
+        if ($(lista[i]).css("background-color") === "rgb(23, 181, 102)") {
+            $("#"+tabla+" tbody tr").css("background", "none");
+            seleccionado = $(lista[i]);
+            break;
+        }
+    }
+    return seleccionado;
+}
+/*importa
+ * 
+ * <script src="Script/Plugin/tableExport.min.js" type="text/javascript"></script>
+   <script src="Script/Plugin/tableExport.min.js" type="text/javascript"></script>
+ */
+function exportarExcel(tabla,titulo) {
+    cargando(true);
+    var lista = $("#"+tabla).find("tr");
+    var elemento="<table id='tablaExcel'><thead>";
+    for (var i = 0; i < lista.length; i++) {
+        var tr=$(lista[i]).find("div");
+        elemento+="<tr>";
+        for (var j = 0; j < tr.length; j++) {
+            var ele=$(tr[j]).children();
+            var texto="";
+            if(ele.is('input')){
+                texto=ele.val();
+            }
+            if(ele.is('select')){
+                texto=ele.find("option:selected").text();
+            }
+            if(texto===""){
+                texto=$(tr[j]).text();
+            }
+            if(i===0){
+               elemento+="<th>"+texto+"</th>"; 
+            }else{
+                elemento+="<td>"+texto+"</td>"; 
+            }
+        }
+        elemento+="</tr>";
+        if(i===0){
+            elemento+="</thead><tboddy>";
+        }
+    }
+    elemento+="</tboddy></table>";
+    $("body").append(elemento);
+    cargando(false);
+    $('#tablaExcel').tableExport({type:'xls',fileName: titulo});  
+    $("#tablaExcel").remove();
+}
+function cargando(estado){
+    if(estado){
+         var elemento="<div  id='cargando' style='z-index: 2;'>"
+                        +"<div>"
+                        +"<img src='"+imagenCargando+"' title='CARGANDO'/>"
+                        +"<span class='negrillaenter centrar'>CARGANDO</span>"
+                        +"</div>";
+                        +"</div>";
+        $("body").append(elemento);
+    }else{
+        $("#cargando").remove();
+    }
+}
+/*
+ * 
+ * var lista = $("#"+tabla).find("tr");
+    var aux = "";
+    for (var i = 0; i < lista.length; i++) {
+        var tr=$(lista[i]).find("div");
+        for (var j = 1; j < tr.length; j++) {
+            var ele=$(tr[j]).children();
+            var texto="";
+            if(ele.is('input')){
+                texto=ele.val();
+            }
+            if(ele.is('select')){
+                texto=ele.find("option:selected").text();
+            }
+            if(texto===""){
+                texto=$(tr[j]).text();
+            }
+            aux += texto + "{";
+        }
+        aux = aux.substring(0, aux.length-1) + ",";
+    }
+    aux = aux.substring(0, aux.length-1);
+    $("#formExcel").remove();
+    $("body").append("<form id='formExcel' action='"+url+"' method='post' style='display: none;' accept-charset='ISO-8859-1'>"
+                    +"<input type='text' value='exportarExcel' name='proceso'/>"
+                    +"<input type='text' value='a{b{c{d,a{b{c{d,a{b{c{d,a{b{c{d' name='excel'/>"
+                    +"<input type='text' value='REPORTE' name='nombreExcel'/>"
+                    +"<input type='text' value='' name='tituloExcel'/>"
+                    +"<button id='descarga'>descargar</button>"
+                    +"</form>");
+    $("input[name=excel]").val(aux);
+ */
 

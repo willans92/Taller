@@ -191,6 +191,43 @@
                 </div> 
             </div>
             <div id="cuerpoDatosEmpresa">
+                <div><div class='contenedor50'>
+                    <span class='negrillaenter'>Logo</span>
+                    <div id="LogoEmpresa">
+                        <img src="../Imagen/personal.svg" alt="" class="point" onclick="cargarImagen(this, 1)"/>
+                    </div>
+                    <span class='negrillaenter'>NIT</span>
+                    <input type='text' class='normal' name='nit'/>
+                    <span class='negrillaenter'>Nombre del taller</span>
+                    <input type='text' class='grande2' name='nombreTaller'/>
+                    <span class='negrillaenter'>Razon Social</span>
+                    <input type='text' class='grande2' name='rz'/>
+                    <span class='negrillaenter'>Dirección</span>
+                    <input type='text' class='grande2' name='direccionTaller'/>
+                    <span class='negrillaenter'>Telefono</span>
+                    <input type='text' class='medio' name='telefonoTaller'/>
+                    <span class='negrillaenter'>Aniversario del taller</span>
+                    <input type='text' class='normal fecha' name='aniversarioTaller'/>
+                </div>
+                <div class='contenedor50'>
+                    <span class='negrillaenter'>INFORMACION DE LA FACTURA</span><br>
+                    <span class='negrillaenter'>Nro. Factura</span>
+                    <input type='text' class='normal' name='nroFactura' readonly/>
+                    <span class='negrillaenter'>Fecha Dosificación</span>
+                    <input type='text' class='medio fecha' name='fechaDosificacion'/>
+                    <span class='negrillaenter'>Llave de dosificación</span>
+                    <input type='text' class='grande2' name='llaveDosificacion'/>
+                    <span class='negrillaenter'>Número de autorización</span>
+                    <input type='text' class='grande' name='autorizacion'/>
+                    <span class='negrillaenter'>Fecha Fin de la dosificación</span>
+                    <input type='text' class='normal' name='findosificacion' readonly/>
+                </div>
+                    <div class='clear'></div>
+                </div>
+
+                <div class='centrar'>
+                    <button onclick='actualizarEmpresa()' class='medio'>ACTUALIZAR</button>
+                </div>
             </div>
             <div class="background"></div>
             <div id="popPagoSueldo" class="popup">

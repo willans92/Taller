@@ -141,10 +141,8 @@ class PERSONAL {
 
     function insertar() {
         $consulta = "insert into taller.PERSONAL(id_personal, foto, carnet, nombre, direccion, correo, cumpleano, fecha_ingreso, cuenta, contrasena, sueldo, rol, id_empresa, estado, fecha_retirado) values(" . $this->id_personal . ",'" . $this->foto . "','" . $this->carnet . "','" . $this->nombre . "','" . $this->direccion . "','" . $this->correo . "','" . $this->cumpleano . "','" . $this->fecha_ingreso . "','" . $this->cuenta . "',MD5('$this->contrasena')," . $this->sueldo . ",'" . $this->rol . "'," . $this->id_empresa . ",'ACTIVO','" . $this->fecha_retirado . "')";
-        $resultado = $this->CON->consulta($consulta);
-        $consulta = "SELECT LAST_INSERT_ID() as id";
-        $resultado = $this->CON->consulta($consulta);
-        return $resultado->fetch_assoc()['id'];
+        $resultado = $this->CON->manipular($consulta);
+        return $resultado;
     }
     function logear($cuenta,$contrasena) {
         $consulta = "select count(*) as cant from taller.PERSONAL where cuenta='$cuenta' and contrasena=MD5('$contrasena')";
@@ -153,10 +151,17 @@ class PERSONAL {
         return $empresa;
     }
     function estadoUsuario($cuenta,$contrasena) {
-        $consulta = "select count(*) as cant from taller.PERSONAL where cuenta='$cuenta' and contrasena=MD5('$contrasena') and estado='ACTIVO'";
+        $consulta = "select id_empresa ,id_personal from taller.PERSONAL where cuenta='$cuenta' and contrasena=MD5('$contrasena') and estado='ACTIVO'";
         $result = $this->CON->consulta($consulta);
-        $empresa = $result->fetch_assoc()['cant'];
-        return $empresa;
+        if ($result->num_rows > 0) {
+            $empresa=array();
+            $row=$result->fetch_assoc();
+            $empresa["empresa"] = $row['id_empresa'];
+            $empresa["personal"] = $row['id_personal'];
+            return $empresa;
+        }else{
+            return null;
+        }
     }
 
 }

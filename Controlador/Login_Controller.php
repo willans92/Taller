@@ -15,7 +15,11 @@
     $cuenta=$_POST["cuenta"];
     $contrasena=$_POST["contra"];
     if($personal->logear($cuenta, $contrasena)>0){
-        if($personal->estadoUsuario($cuenta, $contrasena)>0){
+        $re=$personal->estadoUsuario($cuenta, $contrasena);
+        if($re!=null){
+            session_start();
+            $_SESSION["empresa"]=$re["empresa"];
+            $_SESSION["personal"]=$re["personal"];
             $resultado="Entro";
         }else{
             $error="Cuenta Bloqueado";

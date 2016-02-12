@@ -1,6 +1,6 @@
 body{
     background:#4c4c4c none repeat scroll 0 0;
-    font-size: 15px;
+    font-size: 12px;
     font-family: arial;
     margin: 0;
     padding: 0;
@@ -96,6 +96,9 @@ img{
 .normal{
     width: 100px;
 }
+.normal2{
+    width: 125px;
+}
 .medio{
     width: 150px;
 }
@@ -108,10 +111,17 @@ img{
 .grande3{
     width: 300px;
 }
+select{
+    font-size: 10px;
+    text-align: center;
+}
+input{
+    font-size: 10px;
+}
 button{
     /* border: 1px solid; */
     border-radius: 6px;
-    padding: 1px;
+    padding: 3px;
     margin-top: 10px;
     box-shadow: 0 0 2px 1px black;
     cursor: pointer;
@@ -223,6 +233,10 @@ iframe{
 .minitext{
     font-size: 12px;
     font-weight: bold;
+}
+.mas:hover{
+    cursor: pointer;
+    font-size: 14px;
 }
 .box2{
     border: medium solid black;
@@ -425,16 +439,23 @@ div#formulario {
     border: solid 3px;
     left: -240px;
 }
-div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa,#cuerpoListadoEmpleado,#cuerpoEmpleadoPago {
+div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa
+,#cuerpoListadoEmpleado,#cuerpoEmpleadoPago , #cuerpoListadoCliente, #cuerpoNuevoCliente {
     position: absolute;
     top:295px;
     left:330px;
     z-index: 0;
     width:10px;
     height:10px;
+    overflow: hidden;
     display: none;
 }
 #fotoPerfil{
+    width: 80px;
+    height: 80px;
+    margin-left: 36px;
+}
+#LogoEmpresa{
     width: 80px;
     height: 80px;
     margin-left: 36px;
@@ -447,4 +468,44 @@ div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa,#cuerpoLi
 }
 #popPagoSueldo{
     width: 470px;
+}
+div#contenedorCliente {
+    width: 97%;
+    height: 385px;
+    overflow: auto;
+}
+.itemCliente .contenedor70{
+    padding-top: 5px;
+}
+.itemCliente {
+    width: 180px;
+    height: 90px;
+    font-size: 9px;
+    box-shadow: 0 0 4px 2px black;
+    padding: 2px;
+    display: inline-block;
+    margin: 5px;
+    overflow: hidden;
+}
+input[name=buscadorCliente]{
+    text-align: center;
+}
+#mensajeAyuda{
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    margin-top: 7px;
+}
+#contenedorVehiculo {
+    width: 93%;
+    overflow: visible;
+    height: 378px;
+    overflow: auto;
+    margin-top: 10px;
+}
+.itemVehiculo {
+    box-shadow: 0 0 3px 1px black;
+    padding: 8px 7px;
+    height: 135px;
+    margin-top: 8px;
 }

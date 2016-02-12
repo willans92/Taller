@@ -12,8 +12,8 @@ function validar($tipo,$texto){
          
             break;
         case "vacio":
-           if(strlen($texto)===1){
-              return FALSE;
+           if(strlen($texto)>0){
+              return true;
             }
             break;
         case "entero":
@@ -35,6 +35,6 @@ function validar($tipo,$texto){
             }
             break;
     }
-     return true;
+     return false;
 }
 }
