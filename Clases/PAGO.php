@@ -66,6 +66,18 @@ class PAGO {
         }
         return $empresa[0];
     }
+    function buscarXReparacion($id) {
+        $consulta = "select * from taller.PAGO where id_reparacion=$id";
+        $result = $this->CON->consulta($consulta);
+        $empresa = $this->rellenar($result);
+        return $empresa;
+    }
+    function buscarXReparacionTotal($id) {
+        $consulta = "select sum(monto) as total from taller.PAGO where id_reparacion=$id";
+        $result = $this->CON->consulta($consulta);
+        $r= $result->fetch_assoc()["total"];
+        return $r;
+    }
     function buscarXPersona($id,$mes,$ano) {
         $consulta = "select * from taller.PAGO where id_personal=$id "
                    . "and YEAR(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y'))=$ano
@@ -102,6 +114,10 @@ class PAGO {
         $consulta = "SELECT LAST_INSERT_ID() as id";
         $resultado = $this->CON->consulta($consulta);
         return $resultado->fetch_assoc()['id'];
+    }
+    function insertarPagoReparacion() {
+        $consulta = "insert into taller.PAGO(id_pago, fecha, monto, id_reparacion, tipo, id_personal) values(" . $this->id_pago . ",'" . $this->fecha . "'," . $this->monto . "," . $this->id_reparacion . ",'" . $this->tipo . "'," . $this->id_personal . ")";
+        return $this->CON->manipular($consulta);
     }
     function insertarPagoPersonal($personal,$monto,$fecha,$fechacorresponde,$descripcion) {
         $consulta = "insert into taller.PAGO(fecha, monto, tipo, descripcion, id_personal,fecha_Corresponde) "

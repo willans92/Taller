@@ -292,6 +292,12 @@ function validar(tipo,texto){
                 return true;
             }
             break;
+        case "decimal":
+            var expresion=/^\d+(\.\d{1,2})?/;
+            if(expresion.exec(texto)){
+                return true;
+            }
+            break;
         case "texto y entero":
             var expresion=/^[0-9a-zA-Z\.\,\s-_º()=?¿/%$@!:;{}óíáéúñÍÁÉÚÓ]+$/;
             if(expresion.exec(texto)){

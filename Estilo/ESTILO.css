@@ -81,6 +81,10 @@ img{
 }
 .sinborde{
     border: none;
+    border-radius: 0;
+    padding: 0;
+    position: relative;
+    top: 1px;
 }
 .pequeno{
     width: 50px;
@@ -171,6 +175,9 @@ button{
     border-radius: 7px;
     width: 340px;
     z-index: 5;
+}
+p{
+    margin: 1px 0;
 }
 .background{
     background: rgba(20, 20, 20, 0.4) none repeat scroll 0 0;
@@ -270,7 +277,7 @@ menu{
 }
 .tituloPop{
     font-size: 21px;
-    margin-bottom: 15px;
+    margin-bottom: 2px;
     margin-top: 0;
     text-align: center;
 }
@@ -440,7 +447,8 @@ div#formulario {
     left: -240px;
 }
 div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa
-,#cuerpoListadoEmpleado,#cuerpoEmpleadoPago , #cuerpoListadoCliente, #cuerpoNuevoCliente {
+,#cuerpoListadoEmpleado,#cuerpoEmpleadoPago , #cuerpoListadoCliente, #cuerpoNuevoCliente
+,#cuerpoReparacion,#cuerpoHistorial{
     position: absolute;
     top:295px;
     left:330px;
@@ -449,6 +457,15 @@ div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa
     height:10px;
     overflow: hidden;
     display: none;
+}
+#cuerpoNuevoCliente > .contenedor50{
+    height: 425px;
+}
+table#tablaHistorialRe tbody{
+    height: 313px;
+}
+table#tablaHistorialRe {
+    margin-top: 8px;
 }
 #fotoPerfil{
     width: 80px;
@@ -471,13 +488,23 @@ div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa
 }
 div#contenedorCliente {
     width: 97%;
-    height: 385px;
+    height: 366px;
     overflow: auto;
 }
 .itemCliente .contenedor70{
     padding-top: 5px;
+    padding-left: 10px;
+    width: 65%;
+}
+.itemCliente .contenedor30{
+    padding-left: 7px;
+    width: 25%;
+}
+.itemCliente:hover{
+    transform: scale(1.02,1.02);
 }
 .itemCliente {
+    cursor: pointer;
     width: 180px;
     height: 90px;
     font-size: 9px;
@@ -506,6 +533,65 @@ input[name=buscadorCliente]{
 .itemVehiculo {
     box-shadow: 0 0 3px 1px black;
     padding: 8px 7px;
-    height: 135px;
+    height: 153px;
+    border-radius: 5px;
     margin-top: 8px;
+}
+#toolauto img:hover{
+    transform: scale(1.1,1.1);
+}
+#toolauto img{
+    width: 20px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+#toolauto{
+    height: 20px;
+    text-align: center;
+    margin-top: -5px;
+}
+#cuerpoReparacion > .contenedor50{
+    height: 390px;
+}
+#repara2{
+    padding-left: 20px;
+    width: 46%;
+}
+div#contenedorAccesorios {
+    height: 190px;
+    overflow: auto;
+}
+div#contenedorTrabajo{
+    height: 190px;
+    overflow: auto;
+}
+.cuerpo{
+    width: 375px;
+    max-height: 265px;
+    overflow: auto;
+}
+.itemTrabajo div{
+    display: inline-block;
+    font-size: 9px;
+}
+.itemTrabajo input{
+    text-align: center;
+}
+#tablaTrabajo tbody{
+    height: 260px;
+}
+.itemTrabajo {
+    margin: 0px;
+    padding: 0px;
+}
+span#totaltrabajo {
+    display: inline-block;
+    margin-left: 7px;
+    width: 100px;
+}
+#tablaPago tbody{
+    height: 200px;
+}
+div#poppago {
+    width: 479px;
 }

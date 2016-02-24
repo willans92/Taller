@@ -79,6 +79,11 @@ class PERSONAL {
         $result = $this->CON->consulta($consulta);
         return $this->rellenar($result);
     }
+    function BuscarMecanico() {
+        $consulta = "select * from taller.PERSONAL where PERSONAL.rol='Mecanico'";
+        $result = $this->CON->consulta($consulta);
+        return $this->rellenar($result);
+    }
     function BuscarPersonalAPagar($text,$estado,$ano,$mes) {
         $havin="";
         if($estado==="PAGADO"){

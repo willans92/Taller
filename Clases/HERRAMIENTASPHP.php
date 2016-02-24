@@ -22,6 +22,12 @@ function validar($tipo,$texto){
                return true;
             }
             break;
+        case "decimal":
+            /*if(is_float($texto)){
+               return true;
+            }*/
+            return true;
+            break;
         case "texto y entero":
             $expresion="/^[0-9a-zA-Z\.\,\s-_º()=?¿/%$@!:;{}óíáéúñÍÁÉÚÓ]+$/";
             if(!preg_match($expresion, $texto)){
