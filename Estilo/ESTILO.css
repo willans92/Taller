@@ -11,6 +11,9 @@ body{
     font-family: layla;
     src: url('LaylaExtraBold.ttf');
 }
+.ocultar{
+    display: none;
+}
 h1{
     font-size: 26px;
     margin-top: 8px;
@@ -448,7 +451,7 @@ div#formulario {
 }
 div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa
 ,#cuerpoListadoEmpleado,#cuerpoEmpleadoPago , #cuerpoListadoCliente, #cuerpoNuevoCliente
-,#cuerpoReparacion,#cuerpoHistorial{
+,#cuerpoReparacion,#cuerpoHistorial,#cuerpoMoroso,#cuerpoMovimiento{
     position: absolute;
     top:295px;
     left:330px;
@@ -465,6 +468,18 @@ table#tablaHistorialRe tbody{
     height: 313px;
 }
 table#tablaHistorialRe {
+    margin-top: 8px;
+}
+table#tablamoroso tbody{
+    height: 313px;
+}
+table#tablamoroso {
+    margin-top: 8px;
+}
+table#tablaMovimiento tbody{
+    height: 300px;
+}
+table#tablaMovimiento {
     margin-top: 8px;
 }
 #fotoPerfil{

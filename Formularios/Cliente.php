@@ -35,7 +35,7 @@
                     <input type='text' class='normal fecha' name='fechadeHistorial'/>
                     <span class='negrilla'>Hasta: </span>
                     <input type='text' class='normal fecha' name='fechahastaHistorial'/>
-                    <button onclick='evento()' class='normal sinborde'>BUSCAR</button>
+                    <button onclick='historial()' class='normal sinborde'>BUSCAR</button>
                 </div>
                 <table id='tablaHistorialRe'>
                     <thead >
@@ -212,8 +212,8 @@
                 <input type='text' class='normal' name='totalrpago' readonly/>
                 <span class='negrillaenter'>Total Pagado</span>
                 <input type='text' class='normal' name='pagadopago' readonly/>
-                <span class='negrillaenter'>falta Pagar</span>
-                <input type='text' class='normal' name='faltapago'/>
+                <span class='negrillaenter'>Falta Pagar</span>
+                <input type='text' class='normal' name='faltapago' readonly/>
                 <span class='negrillaenter'>Fecha</span>
                 <input type='text' class='normal fecha' name='fechapago'/>
                 <span class='negrillaenter'>Monto</span>

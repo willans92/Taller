@@ -273,17 +273,17 @@ $(document).ready(function(){
     $.datepicker.setDefaults($.datepicker.regional["es"]);
 });
 function validar(tipo,texto){
-    texto+=" ";
+    texto=texto.trim();
     switch (tipo){
         case "texto":
             var expresion=/^[a-zA-Z\.\,\s-_º()=?¿/%$@!:;{}óíáéúñÍÁÉÚÓ]+$/;
-            if(expresion.exec(texto)){
+            if(expresion.exec(texto+" ")){
                 return true;
             }
             break;
         case "correo":
-            /*var expresion=/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-            if (expresion.test(texto))*/
+            var expresion=/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            if (expresion.test(texto))
                 return true;
             break;
         case "entero":
@@ -300,7 +300,7 @@ function validar(tipo,texto){
             break;
         case "texto y entero":
             var expresion=/^[0-9a-zA-Z\.\,\s-_º()=?¿/%$@!:;{}óíáéúñÍÁÉÚÓ]+$/;
-            if(expresion.exec(texto)){
+            if(expresion.exec(texto+" ")){
                 return true;
             }
             break;

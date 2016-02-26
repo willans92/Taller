@@ -33,12 +33,12 @@ function cambioProceso(titulo, etiqueta) {
             }
             if("cuerpoEmpleadoPago"===etiqueta){
                 $("input[name=anoEmpleado]").val(ano);
-                $("#mesEmpleado option[value="+mes+"]").attr("selected");
+                $("#mesEmpleado option[value="+mes+"]").attr("selected",true);
                 buscarEmpleadoPago("");  
             }
             if("cuerpoOtrosPagos"===etiqueta){
                 $("input[name=anoOtropago]").val(ano);
-                $("#mesOtroPago option[value="+mes+"]").attr("selected");
+                $("#mesOtroPago option[value="+mes+"]").attr("selected",true);
                 buscarOtroPago("");  
             }
             if("cuerpoDatosEmpresa"===etiqueta){
@@ -67,12 +67,12 @@ function cambioProceso(titulo, etiqueta) {
                 }
                 if("cuerpoEmpleadoPago"===etiqueta){
                     $("input[name=anoEmpleado]").val(ano);
-                    $("#mesEmpleado option[value="+mes+"]").attr("selected");
+                    $("#mesEmpleado option[value="+mes+"]").attr("selected",true);
                     buscarEmpleadoPago("");  
                 }
                 if("cuerpoOtrosPagos"===etiqueta){
                     $("input[name=anoOtropago]").val(ano);
-                    $("#mesOtroPago option[value="+mes+"]").attr("selected");
+                    $("#mesOtroPago option[value="+mes+"]").attr("selected",true);
                     buscarOtroPago("");  
                 }
                 if("cuerpoDatosEmpresa"===etiqueta){
@@ -103,25 +103,28 @@ function RegistrarPersonal(tipo){
     var perfil=$("#fotoPerfil img").attr("src").trim();
     var error="";
     if(ci.length===0){
-        error+="<p>El carnet no puede ser vac�o.</p>";
+        error+="<p>El carnet no puede ser vacío.</p>";
     }
     if(!validar("entero",ci)){
         error+="<p>Ingrese un carnet valido.</p>";
     }
     if(nombre.length===0){
-        error+="<p>El nombre no puede estar vac�o.</p>";
+        error+="<p>El nombre no puede estar vacío.</p>";
     }
     if(!validar("texto y entero",nombre)){
         error+="<p>El nombre no puede tener caracteres especiales.</p>";
     }
     if(direccion.length===0){
-        error+="<p>La direcci�n no puede estar vac�a.</p>";
+        error+="<p>La dirección no puede estar vacía.</p>";
     }
     if(!validar("texto y entero",direccion)){
-        error+="<p>La direcci�n no puede tener caracteres especiales.</p>";
+        error+="<p>La dirección no puede tener caracteres especiales.</p>";
     }
     if(!validar("correo",correo)){
         error+="<p>El correo no es valido.</p>";
+    }
+    if(parseFloat(sueldo)<0){
+        error+="<p>No ha especifiado el sueldo.</p>";
     }
     if(!validar("texto y entero",cuenta)){
         error+="<p>La cuenta no puede tener caracteres especiales.</p>";
@@ -130,20 +133,20 @@ function RegistrarPersonal(tipo){
         error+="<p>La cuenta tiene que ser mayor a 4 caracteres y menor a 8.</p>";
     }
     if(!validar("texto y entero",contrasena)){
-        error+="<p>La contrasena no puede tener caracteres especiales.</p>";
+        error+="<p>La contraseña no puede tener caracteres especiales.</p>";
     }
     if(!(contrasena.length>=4 && contrasena.length<9)){
-        error+="<p>La contrasena tiene que ser mayor a 4 caracteres y menor a 8.</p>";
+        error+="<p>La contraseña tiene que ser mayor a 4 caracteres y menor a 8.</p>";
     }
     if(contrasena!==recontrasena){
-        error+="<p>Las contrase�as no coinciden.</p>";
+        error+="<p>Las contraseñas no coinciden.</p>";
     }
     if(error.length>0){
         $("body").msmOK(error);
         return;
     }
     cargando(true);
-    $.post(url, {proceso: 'registroPersonal',ci:ci,nombre:nombre,direccion:direccion,correo:correo,cumpleano:cumpleanos,fechaingreso:fechaingreso,sueldo:sueldo,cargo:cargo,cuenta:cuenta,contrasena:contrasena,perfil:perfil}, function (response) {
+    $.post(url, {proceso: 'registroPersonal',recontrasena:recontrasena,ci:ci,nombre:nombre,direccion:direccion,correo:correo,cumpleano:cumpleanos,fechaingreso:fechaingreso,sueldo:sueldo,cargo:cargo,cuenta:cuenta,contrasena:contrasena,perfil:perfil}, function (response) {
         cargando(false);
         var json = $.parseJSON(response);
         if (json.error.length > 0) {
@@ -203,8 +206,8 @@ function buscarEmpleado(e){
                 if(json.result[i].rol==="Recepcionista"){
                     cargos="<select>"
                         +"<option value='0' >Administrador</option>"
-                        +"<option value='1' selected>Mecanico</option>"
-                        +"<option value='2'>Recepcionista</option>"
+                        +"<option value='1'>Mecanico</option>"
+                        +"<option value='2' selected>Recepcionista</option>"
                         +"</select>";
                 }
                 html="<tr data-id='"+json.result[i].id_personal+"'>";
@@ -213,8 +216,8 @@ function buscarEmpleado(e){
                 html+="<td><div class='grande2'><input type='text' value='"+json.result[i].nombre+"'/></div></td>";
                 html+="<td><div class='grande'><input type='text' value='"+json.result[i].direccion+"'/></div></td>";
                 html+="<td><div class='grande'><input type='text' value='"+json.result[i].correo+"'/></div></td>";
-                html+="<td><div class='medio'><input type='fecha' value='"+json.result[i].cumpleano+"'/></div></td>";
-                html+="<td><div class='normal'><input type='text' value='"+json.result[i].sueldo+"'/></div></td>";
+                html+="<td><div class='medio'><input type='text' class='fecha' value='"+json.result[i].cumpleano+"'/></div></td>";
+                html+="<td><div class='normal'><input type='number' step='0.5' min='0' value='"+json.result[i].sueldo+"'/></div></td>";
                 html+="<td><div class='medio'>"+json.result[i].fecha_ingreso+"</div></td>";
                 html+="<td><div class='medio'>"+cargos+"</div></td>";
                 html+="<td><div class='medio'>"+json.result[i].cuenta+"</div></td>";
@@ -259,25 +262,28 @@ function actualizarPersonal(){
     var retirado=seleccionado.find("div:eq(12)").text();
     var error="";
     if(ci.length===0){
-        error+="<p>El carnet no puede ser vac�o.</p>";
+        error+="<p>El carnet no puede ser vacío.</p>";
     }
     if(!validar("entero",ci)){
         error+="<p>Ingrese un carnet valido.</p>";
     }
     if(nombre.length===0){
-        error+="<p>El nombre no puede estar vac�o.</p>";
+        error+="<p>El nombre no puede estar vacío.</p>";
     }
     if(!validar("texto y entero",nombre)){
         error+="<p>El nombre no puede tener caracteres especiales.</p>";
     }
     if(direccion.length===0){
-        error+="<p>La direcci�n no puede estar vac�a.</p>";
+        error+="<p>La dirección no puede estar vacía.</p>";
     }
     if(!validar("texto y entero",direccion)){
-        error+="<p>La direcci�n no puede tener caracteres especiales.</p>";
+        error+="<p>La direcciín no puede tener caracteres especiales.</p>";
     }
     if(!validar("correo",correo)){
         error+="<p>El correo no es valido.</p>";
+    }
+    if(parseFloat(sueldo)<0){
+        error+="<p>No ha especifiado el sueldo.</p>";
     }
     if(!validar("texto y entero",contrasena)){
         error+="<p>La contrasena no puede tener caracteres especiales.</p>";
@@ -335,14 +341,14 @@ function buscarEmpleadoPago(e){
         return;
     }
     if(!validar("entero",ano) || parseInt(ano)<1990){
-        $("body").msmOK("El a�o no es valido.")
+        $("body").msmOK("El año no es valido.")
         return;
     }
     var estado=$("input[name=tipopago]:checked").val();
      if(estado==="FALTA_PAGAR"){
-        $("#btnpago").visible();
+        $("#btnpago").text("PAGAR");
     }else{
-        $("#btnpago").ocultar();
+        $("#btnpago").text("HISTORIAL PAGO");
     }
     cargando(true);
     $.post(url, {proceso: 'buscarEmpleadoPago', text: text,estado:estado,ano:ano,mes:parseInt(mes)+1}, function (response) {
@@ -361,7 +367,7 @@ function buscarEmpleadoPago(e){
             }
             $("#tablaEmpleadoSueldo tbody").html("");
             for (var i = 0; i < json.result.length; i++) {
-                html="<tr ondblclick='detalleSueldo(this)' data-id='"+json.result[i].id_personal+"' data-saldo='"+json.result[i].saldo+"'>";
+                html+="<tr ondblclick='detalleSueldo(this)' data-id='"+json.result[i].id_personal+"' data-saldo='"+json.result[i].saldo+"'>";
                 html+="<td><div class='normal'>"+json.result[i].carnet+"</div></td>";
                 html+="<td><div class='grande2'>"+json.result[i].nombre+"</div></td>";
                 html+="<td><div class='medio'>"+json.result[i].sueldo+"</div></td>";
@@ -387,6 +393,18 @@ function abrirpagoSueldo(){
     var ano=$("input[name=anoEmpleado]").val();
     var mes=$("#mesEmpleado option:selected").val();
     personalSelecionado=seleccionado.data("id");
+    var tipo=$("input[name=tipopago]:checked").val();
+    if(tipo=="PAGADO"){
+        $("#btnpagorealizar").ocultar();
+        $("#lblmonto").ocultar();
+        $("input[name=descsueldo]").ocultar();
+        $("input[name=montosueldo]").ocultar();
+    }else{
+        $("#btnpagorealizar").visible();
+        $("#lblmonto").visible();
+        $("input[name=descsueldo]").visible();
+        $("input[name=montosueldo]").visible();
+    }
     cargando(true);
     $.post(url, {proceso: 'datosPersonal', personal: personalSelecionado,ano:ano,mes:parseInt(mes)+1}, function (response) {
         cargando(false);
@@ -418,7 +436,7 @@ function abrirpagoSueldo(){
                 html+="<td><div class='normal'>"+json.result.tabla[i].fecha+"</div></td>";
                 html+="<td><div class='normal'>"+json.result.tabla[i].monto+"</div></td>";
                 html+="<td><div class='grande2'>"+json.result.tabla[i].descripcion+"</div></td>";
-                html+="<td><div class='normal'>"+json.result.tabla[i].estado+"</div></td>";
+                html+="<td><div class='normal'><span class='negrilla point' onclick=\"estadoPago(this,'"+json.result.tabla[i].id_pago+"','"+json.result.tabla[i].monto+"')\">"+json.result.tabla[i].estado+"</span></div></td>";
                 html+="</tr>";
             }
             $("#tablaDetallePago tbody").html(html);
@@ -440,19 +458,19 @@ function pagoSueldo(e){
         return;
     }
     if(monto>saldo){
-        $("body").msmOK("<p>En este mes ya le cancelo todo el sueldo al empleado "
+        $("body").msmOK("<p>No tiene suficiente saldo para realizar ese pago. "
                 +$("#nombresueldo").text()+" baya al siguiente mes para darle un adelanto.</p>");
         return;
     }
     if(!validar("texto y entero",desc)){
-        $("body").msmOK("<p>La descripci�n del pago no puede tener caracteres especiales.</p>");
+        $("body").msmOK("<p>La descripción del pago no puede tener caracteres especiales.</p>");
         return;
     }
     var ano=$("input[name=anoEmpleado]").val();
     var mes=parseInt($("#mesEmpleado option:selected").val())+1;
     mes=mes<10?"0"+mes:mes;
     cargando(true);
-    $.post(url, {proceso: 'pagarSueldo',monto:monto,personal: personalSelecionado,fechacorresponde:"01/"+mes+"/"+ano,fecha:fechaActual()}, function (response) {
+    $.post(url, {proceso: 'pagarSueldo',saldo:saldo,monto:monto,personal: personalSelecionado,fechacorresponde:"01/"+mes+"/"+ano,fecha:fechaActual(),descripcion:desc}, function (response) {
         cargando(false);
         var json = $.parseJSON(response);
         if (json.error.length > 0) {
@@ -481,7 +499,7 @@ function buscarOtroPago(e){
         return;
     }
     if(!validar("entero",ano) || parseInt(ano)<1990){
-        $("body").msmOK("El a�o no es valido.")
+        $("body").msmOK("El año no es valido.")
         return;
     }
     var estado=$("input[name=tipootro]:checked").val();
@@ -511,12 +529,33 @@ function buscarOtroPago(e){
                 html+="<td><div class='normal'>"+json.result[i].fecha+"</div></td>";
                 html+="<td><div class='normal'>"+json.result[i].monto+"</div></td>";
                 html+="<td><div class='grande2'>"+json.result[i].descripcion+"</div></td>";
-                html+="<td><div class='normal'>"+json.result[i].estado+"</div></td>";
+                html+="<td><div class='normal'><span class='point negrilla' onclick='estadoOtros(this,"+json.result[i].id_pago+")'>"+json.result[i].estado+"</span></div></td>";
                 html+="</tr>";
                 
             }
             $("#tablaOtroPago tbody").html(html);
             $("#tablaOtroPago").igualartabla();
+        }
+    });
+}
+function estadoOtros(ele,id){
+     var estado="";
+    if($(ele).text()=="ACTIVO"){
+        estado="ANULADO";
+    }else{
+        estado="ACTIVO";
+    }
+    cargando(true);
+    $.post(url, {proceso: 'estadoPago', id: id,estado:estado}, function (response) {
+        cargando(false);
+        var json = $.parseJSON(response);
+        if (json.error.length > 0) {
+            if ("Error Session" === json.error) {
+                padreSession.click();
+            }
+            $("body").msmOK(json.error);
+        } else {
+            $(ele).parent().parent().parent().remove();
         }
     });
 }
@@ -529,12 +568,56 @@ function abrirpagoOtro(tipo){
         $("#popPagoOtros").limpiarFormulario();
     }
 }
+function estadoPago(ele,id,monto){
+    var estado="";
+    if($(ele).text()=="ACTIVO"){
+        estado="ANULADO";
+    }else{
+        estado="ACTIVO";
+        var pagado=$("input[name=tipootro]:checked").val();
+        if(pagado=="PAGADO"){
+            $("body").msmOK("No se puede activar el pago. El saldo es 0.");
+            return;
+        }else{
+            if(parseFloat($("#saldosueldo").text())<parseFloat(monto)){
+                $("body").msmOK("No se puede activar el pago. Sobrepasa el saldo disponible.");
+                return;
+            }
+        }
+    }
+    cargando(true);
+    $.post(url, {proceso: 'estadoPago', estado: estado,id:id}, function (response) {
+        cargando(false);
+        var json = $.parseJSON(response);
+        if (json.error.length > 0) {
+            if ("Error Session" === json.error) {
+                padreSession.click();
+            }
+            $("body").msmOK(json.error);
+        } else {
+            $(ele).text(estado);
+            if($(ele).text()=="ACTIVO"){
+                var saldo=parseFloat($("#saldosueldo").text())-parseFloat(monto);
+                $("#saldosueldo").text(saldo);
+            }else{
+                var saldo=parseFloat($("#saldosueldo").text())+parseFloat(monto);
+                $("#saldosueldo").text(saldo);
+                $("#btnpagorealizar").visible();
+                $("#lblmonto").visible();
+                $("input[name=descsueldo]").visible();
+                $("input[name=montosueldo]").visible();
+            }
+            buscarEmpleadoPago('');
+        }
+    });
+    
+}
 function pagoOtros(){
     var fecha=$("input[name=otrofecha]").val();
     var monto=$("input[name=montofecha]").val();
     var desc=$("input[name=otrodesc]").val();
     if(!validar("texto y entero",desc)){
-        $("body").msmOK("La descripci�n no puede tener caracteres especiales");
+        $("body").msmOK("La descripción no puede tener caracteres especiales");
         return;
     }
     if(parseFloat(monto)<=0){
@@ -580,6 +663,7 @@ function datosEmpresa(){
             $("input[name=autorizacion]").val(json.result.nro_autorizacion);
             $("input[name=findosificacion]").val(json.result.fecha_finDosificacion);
             $("input[name=telefonoTaller]").val(json.result.telefono);
+            $("input[name=ot]").val(json.result.ot);
         }
     });
 }
@@ -596,25 +680,25 @@ function actualizarEmpresa(){
     var telefono=$("input[name=telefonoTaller]").val().trim();
     var error="";
     if(nit.length===0){
-        error+="<p>El nit no puede estar vac�o.</p>";
+        error+="<p>El nit no puede estar vacío.</p>";
     }
     if(!validar("texto y entero",nit)){
         error+="<p>El nit no puede tener caracteres especiales.</p>";
     }
     if(nombre.length===0){
-        error+="<p>El nombre no puede estar vac�o.</p>";
+        error+="<p>El nombre no puede estar vacío.</p>";
     }
     if(!validar("texto y entero",nombre)){
         error+="<p>El nombre no puede tener caracteres especiales.</p>";
     }
     if(rz.length===0){
-        error+="<p>La razon social no puede estar vac�a.</p>";
+        error+="<p>La razon social no puede estar vacía.</p>";
     }
     if(!validar("texto y entero",rz)){
         error+="<p>La razon social no puede tener caracteres especiales.</p>";
     }
     if(!validar("texto y entero",direccion)){
-        error+="<p>El direcci�n no puede tener caracteres especiales.</p>";
+        error+="<p>El dirección no puede tener caracteres especiales.</p>";
     }
     if(!validar("texto y entero",telefono)){
         error+="<p>El telefono no puede tener caracteres especiales.</p>";
@@ -633,7 +717,7 @@ function actualizarEmpresa(){
             }
             $("body").msmOK(json.error);
         } else {
-            
+            $("body").msmOK("Se guardaron los cambios correctamente.")
         }
     });
 }

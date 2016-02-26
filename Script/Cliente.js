@@ -159,6 +159,7 @@ var idCliente = 0;
 var autoId = 0;
 var estadoReparacion = "activo falta pago";
 var reparacionID = 0;
+var modoHistorial=false;
 function historial(){
     var de=$("input[name=fechadeHistorial]").val();
     var hasta=$("input[name=fechahastaHistorial]").val();
@@ -188,7 +189,6 @@ function historial(){
         }
     });
 }
-var modoHistorial=false;
 function detallehistorial(reparacion,auto){
     reparacionID=reparacion;
     autoId=auto;
@@ -286,12 +286,17 @@ function registrarReparacion() {
     var ingreso = $("input[name=fechaIngresoReparacion]").val();
     var combustible = $("input[name=combustibleReparacion]").val();
     var total=$("#totaltrabajo").text();
+    var salida="";
     if (estadoReparacion == "") {
         estadoReparacion = "activo falta pago";
     }
+    if(estadoReparacion.indexOf("fin")>=0){
+        salida = fechaActual();
+    }
     cargando(true);
     $.post(url, {proceso: 'registrarReparacion', accesorio: accesorios, trabajo: trabajo
-        , mecanico: mecanico, ot: ot, km: km, ingreso: ingreso, total:total,combustible: combustible, idreparacion: reparacionID, auto: autoId, estado: estadoReparacion}, function (response) {
+        , mecanico: mecanico, ot: ot, km: km, ingreso: ingreso,salida:salida, total:total,combustible: combustible
+        , idreparacion: reparacionID, auto: autoId, estado: estadoReparacion}, function (response) {
         cargando(false);
         var json = $.parseJSON(response);
         if (json.error.length > 0) {
@@ -375,7 +380,7 @@ function pagoReparacion(estado) {
                 var html = "";
                 if (json.result != null)
                     for (var i = 0; i < json.result.length; i++) {
-                        html += "<tr><td><div class='pequeno'>" + (i + 1) + "</div></td>";
+                        html += "<tr><td><div class='pequeno'>" + json.result[i].descripcion + "</div></td>";
                         html += "<td><div class='normal'>" + json.result[i].fecha + "</div></td>";
                         html += "<td><div class='normal'>" + json.result[i].monto + "</div></td></tr>";
                         total += parseFloat(json.result[i].monto);
@@ -406,8 +411,9 @@ function pagoReparacion(estado) {
         $("body").msmOK("El pago esta excediendo a la deuda del cliente.");
         return;
     }
+    var desc=$("#tablaPago tr").length;
     cargando(true);
-    $.post(url, {proceso: 'pagarReparacion', reparacion: reparacionID, monto: monto, fecha: fecha}, function (response) {
+    $.post(url, {proceso: 'pagarReparacion',desc:desc, reparacion: reparacionID, monto: monto, fecha: fecha}, function (response) {
         cargando(false);
         var json = $.parseJSON(response);
         if (json.error.length > 0) {

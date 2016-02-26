@@ -54,9 +54,9 @@
                     <span class='negrillaenter'>Cuenta</span>
                     <input type='text' class='medio' name='cuenta'/>
                     <span class='negrillaenter'>Contrasena</span>
-                    <input type='text' class='medio' name='contrasena'/>
+                    <input type='password' class='medio' name='contrasena'/>
                     <span class='negrillaenter'>Repita Contrasena</span>
-                    <input type='text' class='medio' name='recontrasena'/>
+                    <input type='password' class='medio' name='recontrasena'/>
                     <br><br>
                 </div>
                 <div class='clear'></div>
@@ -166,10 +166,10 @@
                         <option value="10">Noviembre</option>
                         <option value="11">Diciembre</option>
                     </select><br>
-                    <input type='radio' name='tipootro' value="activo" checked onchange="buscarOtroPago('')"/>
+                    <input type='radio' name='tipootro' value="ACTIVO" checked onchange="buscarOtroPago('')"/>
                     <span class='negrilla'>ACTIVO</span>
-                    <input type='radio' name='tipootro' value="cancelado" onchange="buscarOtroPago('')" />
-                    <span class='negrilla'>CANCELADOS</span>
+                    <input type='radio' name='tipootro' value="ANULADO" onchange="buscarOtroPago('')" />
+                    <span class='negrilla'>ANULADO</span>
 
                 </div>
                 <table id='tablaOtroPago'>
@@ -208,8 +208,10 @@
                     <input type='text' class='medio' name='telefonoTaller'/>
                     <span class='negrillaenter'>Aniversario del taller</span>
                     <input type='text' class='normal fecha' name='aniversarioTaller'/>
+                    <span class='negrillaenter'>O.T</span>
+                    <input type='text' class='normal' name='ot' readonly/>
                 </div>
-                <div class='contenedor50'>
+                <div class='contenedor50 ocultar'>
                     <span class='negrillaenter'>INFORMACION DE LA FACTURA</span><br>
                     <span class='negrillaenter'>Nro. Factura</span>
                     <input type='text' class='normal' name='nroFactura' readonly/>
@@ -242,7 +244,7 @@
                 <span id="cargosueldo"></span><br>
                 <span class='negrilla'>Saldo: </span>
                 <span id="saldosueldo"></span><br>
-                <span class='negrilla'>Monto: </span>
+                <span class='negrilla' id='lblmonto'>Monto: </span>
                 <input type='number' step="0.5" min="0" class='normal' name='montosueldo'/><br><br>
                 <input type='text' class='grande2' name='descsueldo' placeholder="MOTIVO DE PAGO"/><br><br>
                 <span class='negrillaenter'>DETALLE DE PAGOS</span>
@@ -260,9 +262,9 @@
                     </tbody>
                 </table>
                 <div class='centrar'>
-                    <button onclick='pagoSueldo(0)' class='medio'>PAGAR</button>
+                    <button onclick='pagoSueldo(0)' class='medio' id='btnpagorealizar'>PAGAR</button>
                     <button onclick="exportar('tablaDetallePago')" class='medio'>EXPORTAR</button>
-                    <button onclick='pagoSueldo(1)' class='medio'>CANCELAR</button>
+                    <button onclick='pagoSueldo(1)' class='medio'>CERRAR</button>
                 </div>
             </div>
             <div id="popPagoOtros" class="popup">

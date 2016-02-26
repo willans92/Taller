@@ -74,6 +74,14 @@ class PERSONAL {
         $result = $this->CON->consulta($consulta);
         return $this->rellenar($result);
     }
+    function revisarCuenta($cuenta) {
+        $consulta = "select count(*) as cant from taller.PERSONAL where cuenta='$cuenta'";
+        $resultado= $this->CON->consulta($consulta);
+        if($resultado->fetch_assoc()["cant"]=="0"){
+            return false;
+        }
+        return true;
+    }
     function BuscarPersonal($text,$estado) {
         $consulta = "select * from taller.PERSONAL where PERSONAL.carnet like '%$text%' and PERSONAL.nombre like '%$text%' and PERSONAL.cuenta like '%$text%' and PERSONAL.estado='$estado'";
         $result = $this->CON->consulta($consulta);
@@ -85,36 +93,71 @@ class PERSONAL {
         return $this->rellenar($result);
     }
     function BuscarPersonalAPagar($text,$estado,$ano,$mes) {
-        $havin="";
+        $consulta ="";
         if($estado==="PAGADO"){
-            $havin="sum(pago.monto)=personal.sueldo";
+            $consulta="select personal.carnet,personal.nombre,personal.sueldo,personal.id_personal,sum(pago.monto) as pagado, max(pago.fecha) as ultimoPago
+                                from taller.pago join taller.personal on personal.id_personal=pago.id_personal
+                                where pago.tipo='SUELDO' and pago.estado='ACTIVO'
+                                        and (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))>$ano 
+                                        or (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))=$ano 
+                                        and month(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))<=$mes))
+                                        and (personal.fecha_retirado='' or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>$ano 
+                                        or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))=$ano 
+                                        and month(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>=$mes)))
+                                        and YEAR(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y'))=$ano
+                                        and month(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y')) =$mes
+                                        and personal.carnet like '%$text%' and personal.nombre like '%$text%'
+                                group by personal.carnet,personal.nombre,personal.sueldo,personal.id_personal
+                                having sum(pago.monto)=personal.sueldo";
         }else{
-            $havin="sum(pago.monto)<personal.sueldo";
+            $consulta = "select  * 
+from  (	select personal.carnet,personal.nombre,personal.sueldo,personal.id_personal,sum(pago.monto) as pagado1, max(pago.fecha) as ultimoPago1
+		from taller.pago join taller.personal on personal.id_personal=pago.id_personal
+		where pago.tipo='SUELDO' and pago.estado='ACTIVO'
+				and (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))>$ano 
+				or (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))=$ano 
+				and month(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))<=$mes))
+				and (personal.fecha_retirado='' or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>$ano 
+				or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))=$ano 
+				and month(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>=$mes)))
+				and YEAR(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y'))=$ano
+				and month(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y')) =$mes
+				and personal.carnet like '%$text%' and personal.nombre like '%$text%'
+		group by personal.carnet,personal.nombre,personal.sueldo,personal.id_personal
+		) sueldo1 right join
+
+		(select personal.carnet,personal.nombre,personal.sueldo,personal.id_personal,0 as pagado, '--/--/----' as ultimoPago 
+		from taller.personal
+		where (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))>$ano 
+				or (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))=$ano 
+				and month(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))<=$mes))
+				and (personal.fecha_retirado='' or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>$ano 
+				or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))=$ano 
+				and month(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>=$mes)))
+				and personal.carnet like '%$text%' and personal.nombre like '%$text%') sueldo2 on sueldo2.id_personal =sueldo2.id_personal";
         }
-        $consulta = "select personal.carnet,personal.nombre,personal.sueldo,personal.id_personal,sum(pago.monto) as pagado, max(pago.fecha) as ultimoPago 
-                    from taller.pago, taller.personal
-                    where pago.id_personal=1 
-                        and pago.estado='ACTIVO'
-                        and YEAR(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y'))=$ano
-                        and month(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y')) =$mes
-                        and personal.carnet like '%$text%' and personal.nombre like '%$text%'
-                        and personal.id_personal=pago.id_personal
-                    group by personal.carnet,personal.nombre,personal.sueldo,personal.id_personal
-                    having $havin";
+        
         $result = $this->CON->consulta($consulta);
         if ($result->num_rows > 0) {
             $lista = array();
             while ($row = $result->fetch_assoc()) {
                 $personal = array();
-                $monto= $row['pagado'] == null ? 0 : $row['pagado'];
+                $monto= 0;
                 $sueldo= $row['sueldo'] == null ? 0 : $row['sueldo'];
+                if($row["pagado1"]!=null){
+                    $monto= $row['pagado1'] == null ? 0 : $row['pagado1'];
+                    $personal['ultimoPago'] = $row['ultimoPago1'] == null ? "" : $row['ultimoPago1'];
+                }else{
+                    $personal['ultimoPago'] = $row['ultimoPago'] == null ? "" : $row['ultimoPago'];
+                    $monto= $row['pagado'] == null ? 0 : $row['pagado'];
+                }
+                if($monto==$sueldo && $estado!=="PAGADO")continue;
                 $personal['id_personal'] = $row['id_personal'] == null ? "" : $row['id_personal'];
                 $personal['carnet'] = $row['carnet'] == null ? "" : $row['carnet'];
                 $personal['nombre'] = $row['nombre'] == null ? "" : $row['nombre'];
                 $personal['sueldo'] =$sueldo;
-                $personal['pagado'] = $row['pagado'] == null ? "" : $row['pagado'];
+                $personal['pagado'] = $monto;
                 $personal['saldo'] = $sueldo-$monto;
-                $personal['ultimoPago'] = $row['ultimoPago'] == null ? "" : $row['ultimoPago'];
                 $lista[] = $personal;
             }
             return $lista;
@@ -139,7 +182,7 @@ class PERSONAL {
         if(!$this->contrasena==""){
             $contra=", contrasena =MD5('" . $this->contrasena . "')";
         }
-        $consulta = "update taller.PERSONAL set fecha_retirado ='" . $this->fecha_retirado . "', foto ='" . $this->foto . "', carnet ='" . $this->carnet . "', nombre ='" . $this->nombre . "', direccion ='" . $this->direccion . "', correo ='" . $this->correo . "' $contra, sueldo =" . $this->sueldo . ", rol ='" . $this->rol . "',estado ='" . $this->estado . "' where id_personal=" . $id_personal;
+        $consulta = "update taller.PERSONAL set cumpleano='" . $this->cumpleano . "', fecha_retirado ='" . $this->fecha_retirado . "', foto ='" . $this->foto . "', carnet ='" . $this->carnet . "', nombre ='" . $this->nombre . "', direccion ='" . $this->direccion . "', correo ='" . $this->correo . "' $contra, sueldo =" . $this->sueldo . ", rol ='" . $this->rol . "',estado ='" . $this->estado . "' where id_personal=" . $id_personal;
         $result = $this->CON->manipular($consulta);
         return $result;
     }

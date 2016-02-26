@@ -132,11 +132,12 @@ if ($proceso == "registrarReparacion") {
     $km = $_POST['km'];
     $auto = $_POST['auto'];
     $ingreso = $_POST['ingreso'];
+    $salida = $_POST['salida'];
     $combustible = $_POST['combustible'];
     $estado= $_POST['estado'];
     $idreparacion = $_POST['idreparacion'];
     $con->transacion();
-    $reparacion->contructor($idreparacion, $ingreso,"", $km, $combustible, $ot, $auto, $total,$estado, $mecanico);
+    $reparacion->contructor($idreparacion, $ingreso,$salida, $km, $combustible, $ot, $auto, $total,$estado, $mecanico);
     if($idreparacion==0){
         $resultado=$reparacion->insertar();
         $idreparacion=$resultado;
@@ -216,7 +217,8 @@ if ($proceso == "pagarReparacion") {
     $id= $_POST['reparacion'];
     $monto= $_POST['monto'];
     $fecha= $_POST['fecha'];
-    $pago->contructor(0, $fecha, $monto, $id, "REPARACION","", $personalsession, "ACTIVO", "");
+    $desc= $_POST['desc'];
+    $pago->contructor(0, $fecha, $monto, $id, "REPARACION",$desc, $personalsession, "ACTIVO", "");
     $resultado = $pago->insertarPagoReparacion();
     if(!$resultado){
         $error="No se pudo registrar el pago. Intenete nuevamente";

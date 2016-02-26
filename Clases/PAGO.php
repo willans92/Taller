@@ -91,6 +91,18 @@ class PAGO {
     }
     function buscarOtroPago($text,$mes,$ano,$estado) {
         $consulta = "select * from taller.PAGO where pago.descripcion like '%$text%'"
+                    . " and  pago.estado ='$estado' AND pago.tipo like 'OTROS PAGOS'"
+                    . "and YEAR(STR_TO_DATE(pago.fecha,'%e/%c/%Y'))=$ano
+                    and month(STR_TO_DATE(pago.fecha,'%e/%c/%Y')) =$mes order by id_pago DESC";
+        $result = $this->CON->consulta($consulta);
+        $empresa = $this->rellenar($result);
+        if ($empresa == null) {
+            return null;
+        }
+        return $empresa;
+    }
+    function buscarMovimientoReparacion($text,$de,$hasta) {
+        $consulta = "select * from taller.PAGO where pago.descripcion like '%$text%'"
                     . " and  pago.estado like '$estado' AND pago.tipo like 'OTROS PAGOS'"
                     . "and YEAR(STR_TO_DATE(pago.fecha,'%e/%c/%Y'))=$ano
                     and month(STR_TO_DATE(pago.fecha,'%e/%c/%Y')) =$mes order by id_pago DESC";
@@ -107,6 +119,10 @@ class PAGO {
         $result = $this->CON->consulta($consulta);
         return $ret['cant'];
     }
+    function modificarestado($id_pago,$estado) {
+        $consulta = "update taller.PAGO set estado='$estado' where id_pago=" . $id_pago;
+        return $this->CON->manipular($consulta);
+    }
 
     function insertar() {
         $consulta = "insert into taller.PAGO(id_pago, fecha, monto, id_reparacion, tipo, descripcion, id_personal) values(" . $this->id_pago . ",'" . $this->fecha . "'," . $this->monto . "," . $this->id_reparacion . ",'" . $this->tipo . "','" . $this->descripcion . "'," . $this->id_personal . ")";
@@ -116,7 +132,7 @@ class PAGO {
         return $resultado->fetch_assoc()['id'];
     }
     function insertarPagoReparacion() {
-        $consulta = "insert into taller.PAGO(id_pago, fecha, monto, id_reparacion, tipo, id_personal) values(" . $this->id_pago . ",'" . $this->fecha . "'," . $this->monto . "," . $this->id_reparacion . ",'" . $this->tipo . "'," . $this->id_personal . ")";
+        $consulta = "insert into taller.PAGO(id_pago, fecha, monto, id_reparacion, tipo, id_personal,descripcion) values(" . $this->id_pago . ",'" . $this->fecha . "'," . $this->monto . "," . $this->id_reparacion . ",'" . $this->tipo . "'," . $this->id_personal . ",'" . $this->descripcion . "')";
         return $this->CON->manipular($consulta);
     }
     function insertarPagoPersonal($personal,$monto,$fecha,$fechacorresponde,$descripcion) {
@@ -125,11 +141,10 @@ class PAGO {
         $resultado = $this->CON->manipular($consulta);
         return $resultado;
     }
-    function insertarPagoOtros($monto,$fecha,$descripcion) {
-        $consulta = "insert into taller.PAGO(fecha, monto, tipo, descripcion) "
-                . "values('$fecha',$monto,'OTROS PAGOS','$descripcion')";
-        $resultado = $this->CON->manipular($consulta);
-        return $resultado;
+    function insertarPagoOtros($monto,$fecha,$descripcion,$id_personal) {
+        $consulta = "insert into taller.PAGO(fecha, monto, tipo, descripcion,id_personal) "
+                . "values('$fecha',$monto,'OTROS PAGOS','$descripcion',$id_personal)";
+        return $this->CON->manipular($consulta);
     }
 
 }

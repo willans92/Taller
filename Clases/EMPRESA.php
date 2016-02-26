@@ -16,13 +16,14 @@ class EMPRESA {
     var $nro_autorizacion;
     var $telefono;
     var $fecha_finDosificacion;
+    var $ot;
     var $CON;
 
     function EMPRESA($con) {
         $this->CON = $con;
     }
 
-    function contructor($id_empresa, $nombre, $razon_social, $logo, $aniversario, $fecha_afiliacion, $nit, $direccion, $nro_factura, $fecha_factura, $llave_dosificacion, $nro_autorizacion, $telefono, $fecha_finDosificacion) {
+    function contructor($id_empresa, $nombre, $razon_social, $logo, $aniversario, $fecha_afiliacion, $nit, $direccion, $nro_factura, $fecha_factura, $llave_dosificacion, $nro_autorizacion, $telefono, $fecha_finDosificacion,$ot) {
         $this->id_empresa = $id_empresa;
         $this->nombre = $nombre;
         $this->razon_social = $razon_social;
@@ -32,6 +33,7 @@ class EMPRESA {
         $this->nit = $nit;
         $this->direccion = $direccion;
         $this->nro_factura = $nro_factura;
+        $this->ot= $ot;
         $this->fecha_factura = $fecha_factura;
         $this->llave_dosificacion = $llave_dosificacion;
         $this->nro_autorizacion = $nro_autorizacion;
@@ -52,6 +54,7 @@ class EMPRESA {
                 $empresa->fecha_afiliacion = $row['fecha_afiliacion'] == null ? "" : $row['fecha_afiliacion'];
                 $empresa->nit = $row['nit'] == null ? "" : $row['nit'];
                 $empresa->direccion = $row['direccion'] == null ? "" : $row['direccion'];
+                $empresa->ot = $row['ot'] == null ? "0" : $row['ot'];
                 $empresa->nro_factura = $row['nro_factura'] == null ? "" : $row['nro_factura'];
                 $empresa->fecha_factura = $row['fecha_factura'] == null ? "" : $row['fecha_factura'];
                 $empresa->llave_dosificacion = $row['llave_dosificacion'] == null ? "" : $row['llave_dosificacion'];
@@ -84,6 +87,14 @@ class EMPRESA {
 
     function modificar($id_empresa) {
         $consulta = "update taller.EMPRESA set nombre ='" . $this->nombre . "', razon_social ='" . $this->razon_social . "', logo ='" . $this->logo . "', aniversario ='" . $this->aniversario . "', nit ='" . $this->nit . "', direccion ='" . $this->direccion . "', nro_factura ='" . $this->nro_factura . "', fecha_factura ='" . $this->fecha_factura . "', llave_dosificacion ='" . $this->llave_dosificacion . "', nro_autorizacion ='" . $this->nro_autorizacion . "', telefono='$this->telefono',fecha_finDosificacion='$this->fecha_finDosificacion' where id_empresa=" . $id_empresa;
+        return $this->CON->manipular($consulta);
+    }
+    function reinicioOT($id_empresa) {
+        $consulta = "update taller.EMPRESA set ot=0 where id_empresa=" . $id_empresa;
+        return $this->CON->manipular($consulta);
+    }
+    function aumentarOT($id_empresa) {
+        $consulta = "update taller.EMPRESA set ot=ot+1 where id_empresa=" . $id_empresa;
         return $this->CON->manipular($consulta);
     }
 

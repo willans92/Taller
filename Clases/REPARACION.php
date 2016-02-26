@@ -69,14 +69,43 @@ class REPARACION {
         }
         return $empresa[0];
     }
-    function buscarXAuto($id) {
-        $consulta = "select * from taller.REPARACION where id_auto=$id and estado like 'activo%'";
-        $result = $this->CON->consulta($consulta);
-        $empresa = $this->rellenar($result);
-        if ($empresa == null) {
+    function buscarMoroso($text,$de,$hasta,$empresa) {
+        $consulta = "select reparacion.estado,reparacion.id_auto,reparacion.id_reparacion,reparacion.ot,cliente.ci,cliente.nombre,reparacion.total 
+                          ,personal.nombre as mecanico,reparacion.fecha_ingreso
+                          ,reparacion.fecha_salida
+                    from taller.personal 
+			right join taller.reparacion on personal.id_personal =reparacion.id_personal 
+                        inner join taller.auto on auto.id_auto=reparacion.id_auto
+                        inner join taller.cliente on auto.id_cliente=cliente.id_cliente
+                   where STR_TO_DATE(reparacion.fecha_ingreso,'%e/%c/%Y') between
+                          STR_TO_DATE('$de','%e/%c/%Y') and STR_TO_DATE('$hasta','%e/%c/%Y')
+                          and reparacion.estado like '% falta pago' and cliente.id_empresa=$empresa
+                          and (cliente.ci like '%$text%' or cliente.nombre like '%$text%' or reparacion.ot like '%$text%')";
+        $resultado = $this->CON->consulta($consulta);
+        if ($resultado->num_rows > 0) {
+            $lista = array();
+            while ($row = $resultado->fetch_assoc()) {
+                $reparacion = array();
+                $reparacion["id_reparacion"]= $row['id_reparacion'] == null ? "" : $row['id_reparacion'];
+                $reparacion["id_auto"]= $row['id_auto'] == null ? "" : $row['id_auto'];
+                $reparacion["ot"]= $row['ot'] == null ? "" : $row['ot'];
+                $reparacion["ci"]= $row['ci'] == null ? "" : $row['ci'];
+                $reparacion["nombre"]= $row['nombre'] == null ? "" : $row['nombre'];
+                $reparacion["total"]= $row['total'] == null ? "" : $row['total'];
+                $reparacion["mecanico"]= $row['mecanico'] == null ? "" : $row['mecanico'];
+                $reparacion["fecha_ingreso"]= $row['fecha_ingreso'] == null ? "" : $row['fecha_ingreso'];
+                $reparacion["fecha_salida"]= $row['fecha_salida'] == null ? "" : $row['fecha_salida'];
+                $reparacion["estado"]= $row['estado'] == null ? "" : $row['estado'];
+                $consulta="select sum(pago.monto) as total from taller.pago where id_reparacion=".$reparacion["id_reparacion"];
+                $pagado = $this->CON->consulta($consulta);
+                $monto=$pagado->fetch_assoc()["total"];
+                $reparacion["pagado"]=$monto==null?0:$monto;
+                $lista[] = $reparacion;
+            }
+            return $lista;
+        } else {
             return null;
         }
-        return $empresa[0];
     }
     function buscarXHistorial($cliente,$de,$hasta) {
         $consulta = "select reparacion.* 
@@ -94,11 +123,15 @@ class REPARACION {
         if($this->id_personal!=0){
             $empleado=", id_personal=$this->id_personal";
         }
-        $consulta = "update taller.REPARACION set fecha_Ingreso ='" . $this->fecha_Ingreso . "', kilometro ='" . $this->kilometro . "', combustible ='" . $this->combustible . "', OT ='" . $this->OT . "', estado ='" . $this->estado . "' $empleado where id_reparacion=" . $id_reparacion;
+        $consulta = "update taller.REPARACION set fecha_Ingreso ='" . $this->fecha_Ingreso . "', fecha_salida='$this->fecha_salida', kilometro ='" . $this->kilometro . "', combustible ='" . $this->combustible . "', OT ='" . $this->OT . "', estado ='" . $this->estado . "' $empleado where id_reparacion=" . $id_reparacion;
         return $this->CON->manipular($consulta);
     }
     function modificarTotal($id_reparacion,$total,$estado) {
         $consulta = "update taller.REPARACION set total=$total, estado='$estado' where id_reparacion=" . $id_reparacion;
+        return $this->CON->manipular($consulta);
+    }
+    function modificarEstado($id_reparacion,$estado) {
+        $consulta = "update taller.REPARACION set estado='$estado' where id_reparacion=" . $id_reparacion;
         return $this->CON->manipular($consulta);
     }
 
