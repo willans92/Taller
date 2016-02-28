@@ -25,7 +25,7 @@
 
                 </div>
                 <div id='mensajeAyuda'>Al darle doble click a cualquier cliente se puede ingresar a ver sus datos.</div>
-                <div class='centrar'>
+                <div class='centrar clear'>
                     <button onclick='cambioProceso("Nuevo Cliente", "cuerpoNuevoCliente")' class='medio'>NUEVO CLIENTE</button>
                 </div>
             </div>
@@ -83,8 +83,8 @@
 
                     </div>
                 </div>
-                <div class='centrar'>
-                    <button onclick='cambioProceso("Listado de Clientes", "cuerpoListadoCliente")' class='normal'>ATRAS</button>
+                <div class='centrar clear'>
+                    <button onclick='cambioProceso("Listado de Clientes", "cuerpoListadoCliente")' class='normal' id='atrasnuevocliente'>ATRAS</button>
                     <button onclick='registroCliente(this)' class='normal' id="registroCliente">REGISTAR</button>
                     <button class='normal' onclick='cambioProceso("HISTORIAL", "cuerpoHistorial")'>HISTORIAL</button>
                     <button class='normal' onclick='crearVehiculo(0)'>VEHICULO</button>

@@ -49,6 +49,7 @@ function cambioProceso(titulo, etiqueta) {
                 estadoCambioProseso = false;
                 if ("cuerpoListadoCliente" === etiqueta) {
                     idCliente = 0;
+                    $("#fotoPerfil img").attr("src","../Imagen/perfil.svg");
                     buscarClientes("");
                 }
                 if ("cuerpoHistorial" === etiqueta) {
@@ -64,10 +65,14 @@ function cambioProceso(titulo, etiqueta) {
                     if (idCliente === 0) {
                         $("#contentVehiculo").ocultar();
                         $("#registroCliente").text("REGISTAR");
+                        $("#cuerpoNuevoCliente button").ocultar();
+                        $("#registroCliente").visible();
+                        $("#atrasnuevocliente").visible();
                     } else {
                         $("#contentVehiculo").visible();
+                        $("#cuerpoNuevoCliente button").visible();
                         $("#registroCliente").text("GUARDAR");
-                        datosCliente()
+                        datosCliente();
                     }
                 }
                 if ("cuerpoReparacion" === etiqueta) {
@@ -95,6 +100,8 @@ function cambioProceso(titulo, etiqueta) {
                                 $("#repara2 input").removeAttr("readonly");
                                 $("#repara2 select").removeAttr("disabled");
                                 $("input[name=fechaIngresoReparacion]").removeAttr("disabled");
+                                $("input[name=fechaSalidaReparacion]").attr("readonly",true);
+                                $("input[name=otReparacion]").attr("readonly",true);
                             }
                             $("#vehiculoreparacion").text(json.result.auto.vehiculo);
                             $("#modeloreparacion").text(json.result.auto.modelo);
@@ -120,6 +127,12 @@ function cambioProceso(titulo, etiqueta) {
                                 $("input[name=combustibleReparacion]").val(json.result.reparacion.combustible);
                                 estadoReparacion = json.result.reparacion.estado;
                                 reparacionID = json.result.reparacion.id_reparacion;
+                            }else{
+                                $("input[name=otReparacion]").val(json.result.ot);
+                                $("input[name=kilometroReparacion]").val("");
+                                $("input[name=fechaIngresoReparacion]").val(fechaActual());
+                                $("input[name=fechaSalidaReparacion]").val("");
+                                $("input[name=combustibleReparacion]").val("");
                             }
                             var listatrabajo = json.result.trabajo;
                             var html = "";
@@ -131,7 +144,7 @@ function cambioProceso(titulo, etiqueta) {
                                     if(modoHistorial){
                                         html += "<input type='number' class='pequeno' data-id='" + listatrabajo[i].id_trabajos + "' value='" + listatrabajo[i].costo + "' step='0.5' min='0' readonly>";
                                     }else{
-                                        html += "<input type='number' class='pequeno' data-id='" + listatrabajo[i].id_trabajos + "' value='" + listatrabajo[i].costo + "' step='0.5' min='0'>";
+                                        html += "<input type='number' class='pequeno' data-id='" + listatrabajo[i].id_trabajos + "' value='" + listatrabajo[i].costo + "' step='0.5' min='0' onchange='TotalTrabajo()'>";
                                     }
                                     html += "</div>";
                                     total += parseFloat(listatrabajo[i].costo);
@@ -311,13 +324,14 @@ function registrarReparacion() {
             $("body").msmOK(json.error);
         } else {
             $("body").msmOK("Se registro correctamente la reparacion.");
-            reparacionID = json.result;
+            reparacionID = json.result.id;
             if (estadoReparacion.indexOf("fin") >= 0) {
                 estadoReparacion = "activo falta pago";
                 reparacionID = 0;
                 $("#contenedorAccesorios").html("");
                 $("#contenedorTrabajo").html("");
                 $("#repara2").limpiarFormulario();
+                $("input[name=otReparacion]").val(json.result.ot)
             }
         }
     });
@@ -511,7 +525,7 @@ function buscarClientes(e) {
 }
 function detalleCliente(id) {
     idCliente = id;
-    cambioProceso("Cliente", "cuerpoNuevoCliente")
+    cambioProceso("Cliente", "cuerpoNuevoCliente");
 }
 function masVehiculo() {
     var item = "<div class='itemVehiculo' data-id='0'>";
@@ -587,25 +601,25 @@ function registroCliente(e) {
     var foto = $("#fotoPerfil img").attr("src");
     var text = "";
     if (!validar("texto y entero", ci)) {
-        text += "<p>El ci no puede tener caracteres especiales.</p>";
+        text += "<p>-El ci no puede tener caracteres especiales.</p>";
     }
     if (nombre.length === 0) {
-        text += "<p>El nombre no puede ser vacío.</p>";
+        text += "<p>-El nombre no puede ser vacío.</p>";
     }
     if (!validar("texto y entero", nombre)) {
-        text += "<p>El nombre no puede tener caracteres especiales.</p>";
+        text += "<p>-El nombre no puede tener caracteres especiales.</p>";
     }
     if (!validar("texto y entero", direccion)) {
-        text += "<p>La direccion no puede tener caracteres especiales.</p>";
+        text += "<p>-La direccion no puede tener caracteres especiales.</p>";
     }
     if (!validar("entero", casa)) {
-        text += "<p>El telefono de la casa del cliente solo acepta numero.</p>";
+        text += "<p>-El telefono de la casa del cliente solo acepta numero.</p>";
     }
     if (!validar("entero", oficina)) {
-        text += "<p>El telefono de la oficina del cliente solo acepta numero.</p>";
+        text += "<p>-El telefono de la oficina del cliente solo acepta numero.</p>";
     }
     if (!validar("entero", celular)) {
-        text += "<p>El telefono celular del cliente solo acepta numero.</p>";
+        text += "<p>-El telefono celular del cliente solo acepta numero.</p>";
     }
     var listavehiculo = [];
     $("#contentVehiculo input").css("background", "white");
@@ -626,7 +640,7 @@ function registroCliente(e) {
             break;
         }
         if (marca == 0) {
-            item.find("select.vehiculo").css("background", "red");
+            item.find("select.marca").css("background", "red");
             text += "<p>No ha seleccionado la marca de un auto.</p>";
             break;
         }
@@ -688,19 +702,15 @@ function registroCliente(e) {
         } else {
             if (idCliente === 0) {
                 $("body").msmOK("Se registro al cliente " + nombre + ".");
-                if (json.result.marca !== null) {
-                    rellenadorMarca(json.result.marca);
-                }
-                if (json.result.vehiculo !== null) {
-                    rellenadorVehiculo(json.result.vehiculo);
-                }
-                $("#contentVehiculo").visible();
-                $("#registroCliente").text("GUARDAR");
-                $("h1").text("Cliente");
             } else {
                 $("body").msmOK("Se actualizaron los datos correctamente del cliente " + nombre + ".");
             }
             idCliente = json.result.cliente;
+            $("#contentVehiculo").visible();
+            $("#cuerpoNuevoCliente button").visible();
+            $("#registroCliente").text("GUARDAR");
+            $("#contenedorVehiculo").html("");
+            datosCliente();
         }
     });
 }
@@ -838,7 +848,7 @@ function masTrabajo(tipo) {
             var item = $(lista[i]).parent().parent();
             html += "<div class='itemTrabajo'>";
             html += "<div class='medio'>" + item.next().find("input").val() + "</div>";
-            html += "<input type='number' class='pequeno' data-id='" + item.parent().data("id") + "' value='" + item.next().next().find("input").val() + "' step='0.5' min='0'>";
+            html += "<input type='number' class='pequeno' data-id='" + item.parent().data("id") + "' value='" + item.next().next().find("input").val() + "' onchange='TotalTrabajo()' step='0.5' min='0'>";
             html += "</div>";
             total += parseFloat(item.next().next().find("input").val());
         }
@@ -861,12 +871,9 @@ function masTrabajo(tipo) {
         } else {
             $("#poptrabajo").visible();
             $(".background").visible();
-            if (json.result == null) {
-                $("#poptrabajo .cuerpo").html("<div class='itemTrabajo'><centrar><input type='text' class='medio' placeholder='NUEVO TRABAJO' onkeyup='crearTrabajo(event)' name='trabajotxt'/> </centrar></div>");
-                $("#poptrabajo").centrar();
-                return
-            }
+            
             var html = "";
+            if (json.result != null)
             for (var i = 0; i < json.result.length; i++) {
                 html += "<tr data-id='" + json.result[i].id_trabajo + "'><td><div class='pequeno'><input type='checkbox' value='" + json.result[i].id_trabajo + "'></div></td>";
                 html += "<td><div class='grande'><input type='text' value='" + json.result[i].descripcion + "'></div></td>";
@@ -875,13 +882,16 @@ function masTrabajo(tipo) {
             $("#tablaTrabajo tbody").html(html);
             var lista = $("#contenedorTrabajo input");
             for (var i = 0; i < lista.length; i++) {
-                $("#tablaTrabajo tbody input[value=" + $(lista[i]).data("id") + "]").attr("checked", true);
+                var item=$("#tablaTrabajo tbody tr[data-id="+$(lista[i]).data("id")+"] input[type=checkbox]");
+                item.attr("checked", true);
+                item.parent().parent().next().next().find("input").val($(lista[i]).val());
             }
             $("#tablaTrabajo").igualartabla();
             $("#poptrabajo").centrar();
         }
     });
 }
+
 function crearAccesorio(e) {
     if (e.keyCode === 13) {
         var text = $("#popacesorio input[name=accesoriotxt]").val();
@@ -983,4 +993,12 @@ function actualizarTrabajo() {
             $("body").msmOK("Se actualizaron los datos correctamente.");
         }
     });
+}
+function TotalTrabajo(){
+    var lista = $("#contenedorTrabajo input");
+    var total=0;
+    for (var i = 0; i < lista.length; i++) {
+        total+=parseFloat($(lista[i]).val()==""?0:$(lista[i]).val());
+    }
+    $("#totaltrabajo").text(total);
 }

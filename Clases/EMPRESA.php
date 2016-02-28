@@ -84,6 +84,51 @@ class EMPRESA {
         }
         return $empresa[0];
     }
+    function obtenerOT($id) {
+        $consulta = "select empresa.ot, MONTH (NOW()) as mes, YEAR(NOW()) as ano from taller.EMPRESA where id_empresa=$id";
+        $result = $this->CON->consulta($consulta);
+        $result= $result->fetch_assoc();
+        $mes="";
+        switch ($result["mes"]){
+            case 1:
+                $mes="ENE";
+                break;
+            case 2:
+                $mes="FEB";
+                break;
+            case 3:
+                $mes="MAR";
+                break;
+            case 4:
+                $mes="ABR";
+                break;
+            case 5:
+                $mes="MAY";
+                break;
+            case 6:
+                $mes="JUN";
+                break;
+            case 7:
+                $mes="JUL";
+                break;
+            case 8:
+                $mes="AGO";
+                break;
+            case 9:
+                $mes="SEP";
+                break;
+            case 10:
+                $mes="OCT";
+                break;
+            case 11:
+                $mes="NOV";
+                break;
+            case 12:
+                $mes="DIC";
+                break;
+        }
+        return $result["ot"].$mes.$result["ano"];
+    }
 
     function modificar($id_empresa) {
         $consulta = "update taller.EMPRESA set nombre ='" . $this->nombre . "', razon_social ='" . $this->razon_social . "', logo ='" . $this->logo . "', aniversario ='" . $this->aniversario . "', nit ='" . $this->nit . "', direccion ='" . $this->direccion . "', nro_factura ='" . $this->nro_factura . "', fecha_factura ='" . $this->fecha_factura . "', llave_dosificacion ='" . $this->llave_dosificacion . "', nro_autorizacion ='" . $this->nro_autorizacion . "', telefono='$this->telefono',fecha_finDosificacion='$this->fecha_finDosificacion' where id_empresa=" . $id_empresa;

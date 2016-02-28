@@ -117,7 +117,7 @@ class REPARACION {
         $empresa = $this->rellenar($result);
         return $empresa;
     }
-
+    
     function modificar($id_reparacion) {
         $empleado="";
         if($this->id_personal!=0){
@@ -134,7 +134,15 @@ class REPARACION {
         $consulta = "update taller.REPARACION set estado='$estado' where id_reparacion=" . $id_reparacion;
         return $this->CON->manipular($consulta);
     }
-
+    function buscarXAuto($id) {
+        $consulta = "select * from taller.REPARACION where id_auto=$id and estado like 'activo%'";
+        $result = $this->CON->consulta($consulta);
+        $empresa = $this->rellenar($result);
+        if ($empresa == null) {
+            return null;
+        }
+        return $empresa[0];
+    }
     function insertar() {
         $empleado="";
         $empleadoid="";

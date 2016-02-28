@@ -12,6 +12,7 @@ include_once "../Clases/REPARACION.php";
 include_once "../Clases/DETALLE_REPARACION.php";
 include_once "../Clases/ACCESORIO_REPARACION.php";
 include_once "../Clases/PAGO.php";
+include_once "../Clases/EMPRESA.php";
 
 error_reporting(0);
 $error = "";
@@ -106,6 +107,8 @@ if ($proceso == "abrirReparacion") {
     $resultado["auto"] = $auto->buscarXID($id);
     $resultado["mecanico"] = $personal->BuscarMecanico();
     if($idreparacion==0){
+        $empresa=new EMPRESA($con);
+        $resultado["ot"] = $empresa->obtenerOT($empresasession);
         $resultado["reparacion"] = $reparacion->buscarXAuto($id);
     }else{
         $resultado["reparacion"] = $reparacion->buscarXId($idreparacion);
@@ -138,14 +141,17 @@ if ($proceso == "registrarReparacion") {
     $idreparacion = $_POST['idreparacion'];
     $con->transacion();
     $reparacion->contructor($idreparacion, $ingreso,$salida, $km, $combustible, $ot, $auto, $total,$estado, $mecanico);
+    $resultado=array();
     if($idreparacion==0){
-        $resultado=$reparacion->insertar();
-        $idreparacion=$resultado;
+        $resultado["id"]=$reparacion->insertar();
+        $idreparacion=$resultado["id"];
+        $empresa=new EMPRESA($con);
+        $empresa->aumentarOT($empresasession);
     }else{
-        $resultado=$reparacion->modificar($idreparacion);
+        $resultado["id"]=$reparacion->modificar($idreparacion);
     }
     $total=  0.0;
-    if($resultado==0){
+    if($resultado["id"]==0){
         $error="No se pudo registrar la reparacion del auto.";
         $con->rollback();
     }else{
@@ -168,6 +174,10 @@ if ($proceso == "registrarReparacion") {
                 if($total>$pagado){
                     $estado="activo falta pago";
                 }
+            }
+            if(strpos($estado,'fin')!==false){
+                $empresa=new EMPRESA($con);
+                $resultado["ot"]=$empresa->obtenerOT($empresasession);
             }
             if(!$reparacion->modificarTotal($idreparacion,$total,$estado)){
                 $error="No se pudo registrar la reparacion del auto.";
@@ -312,15 +322,10 @@ if ($proceso == "registroCliente") {
     $cliente->contructor($clienteId, $foto, $nombre, $direccion, $casa, $oficina, $celular, $ci, $empresasession);
     $resultado = array();
     if ($clienteId == "0") {
-        $vehiculo = new VEHICULO($con);
-        $marca = new MARCA($con);
         $resultado["cliente"] = $cliente->insertar();
         if ($resultado["cliente"] === 0) {
             $error = "<p>No se logro insertar el nuevo cliente. Intenete nuevamente.</p>";
-        } else {
-            $resultado["vehiculo"] = $vehiculo->buscarXEmpresa($empresasession);
-            $resultado["marca"] = $marca->buscarXEmpresa($empresasession);
-        }
+        } 
     } else {
         $con->transacion();
         if ($cliente->modificar($clienteId)) {
@@ -336,35 +341,35 @@ if ($proceso == "registroCliente") {
                 $observacion = $value["observacion"];
                 $idauto = $value["id"];
                 if ($vehiculo == "0") {
-                    $error = "<p>No ha seleccionado el tipo de vehiculo de un auto.</p>";
+                    $error = "<p>-No ha seleccionado el tipo de vehiculo de un auto.</p>";
                     break;
                 }
                 if ($marca == "0") {
-                    $error = "<p>No ha seleccionado la marca de un auto.</p>";
+                    $error = "<p>-No ha seleccionado la marca de un auto.</p>";
                     break;
                 }
                 if (!$Herramienta->validar("texto y entero", $modelo)) {
-                    $error = "<p>El modelo no puede tener caracteres especiales.</p>";
+                    $error = "<p>-El modelo no puede tener caracteres especiales.</p>";
                     break;
                 }
                 if (!$Herramienta->validar("texto y entero", $chasis)) {
-                    $error = "<p>El chasis no puede tener caracteres especiales.</p>";
+                    $error = "<p>-El chasis no puede tener caracteres especiales.</p>";
                     break;
                 }
                 if (!$Herramienta->validar("texto y entero", $color)) {
-                    $error = "<p>El color no puede tener caracteres especiales.</p>";
+                    $error = "<p>-El color no puede tener caracteres especiales.</p>";
                     break;
                 }
                 if (!$Herramienta->validar("texto y entero", $placa)) {
-                    $error = "<p>El color no puede tener caracteres especiales.</p>";
+                    $error = "<p>-El color no puede tener caracteres especiales.</p>";
                     break;
                 }
                 if (!$Herramienta->validar("texto y entero", $observacion)) {
-                    $error = "<p>La observacion no puede tener caracteres especiales.</p>";
+                    $error = "<p>-La observacion no puede tener caracteres especiales.</p>";
                     break;
                 }
                 if (strlen(observacion)>200) {
-                    $error = "<p>La observacion no puede tener mas de 200 caracteres.</p>";
+                    $error = "<p>-La observacion no puede tener mas de 200 caracteres.</p>";
                     break;
                 }
                 $auto = new AUTO($con);

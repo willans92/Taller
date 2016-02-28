@@ -64,14 +64,14 @@ class AUTO {
         $resultado = $this->CON->consulta($consulta);
         $row = $resultado->fetch_assoc();
         $auto = new AUTO();
-        $auto->id_auto = $row['id_auto'] == null ? "-" : $row['id_auto'];
-        $auto->color = $row['color'] == null ? "-" : $row['color'];
-        $auto->nro_chasis = $row['nro_chasis'] == null ? "-" : $row['nro_chasis'];
-        $auto->observacion = $row['observacion'] == null ? "-" : $row['observacion'];
-        $auto->vehiculo = $row['vehiculo'] == null ? "-" : $row['vehiculo'];
-        $auto->marca = $row['marca'] == null ? "-" : $row['marca'];
-        $auto->modelo = $row['modelo'] == null ? "" : $row['modelo'];
-        $auto->placa = $row['placa'] == null ? "" : $row['placa'];
+        $auto->id_auto = $row['id_auto'] == null ? "---" : $row['id_auto'];
+        $auto->color = $row['color'] == null ? "---" : $row['color'];
+        $auto->nro_chasis = $row['nro_chasis'] == null ? "---" : $row['nro_chasis'];
+        $auto->observacion = $row['observacion'] == null ? "---" : $row['observacion'];
+        $auto->vehiculo = $row['vehiculo'] == null ? "---" : $row['vehiculo'];
+        $auto->marca = $row['marca'] == null ? "---" : $row['marca'];
+        $auto->modelo = $row['modelo'] == null ? "---" : $row['modelo'];
+        $auto->placa = $row['placa'] == null ? "---" : $row['placa'];
         return $auto;
     }
     function buscarXCliente($id) {
