@@ -312,7 +312,7 @@ menu{
     display: inline-block;
     padding: 0;
     overflow: hidden;
-    margin-left: -60px;
+    margin-left: -67px;
     box-shadow: -3px 4px 20px 0px black;
     border: solid 4px;
 }
@@ -344,10 +344,11 @@ menu{
     height: 160px;
     border-radius: 100px;
     display: inline-block;
+    text-align: center;
     padding: 0;
-    /* box-shadow: 0 0 5px 0.5px black; */
     margin-right: -4px;
     border: solid black;
+    overflow: hidden;
 }
 div#administracion {
     width: 50px;
@@ -612,3 +613,6 @@ span#totaltrabajo {
 div#poppago {
     width: 479px;
 }
+#cardLoger img{width: 130px;height: 96px;margin-top: 13px;margin-bottom: 5px;border-radius: 8px;box-shadow: 0 0 2px 1px black;}
+#cerrarSession:hover{font-size: 13px;}
+#cerrarSession{ cursor: pointer;color: black;font-weight: bold;text-decoration: none;}

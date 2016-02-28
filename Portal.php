@@ -11,7 +11,10 @@
     </head>
     <body>
         <div id="cuerpoPrincipal">
-            <div id="cardLoger"></div>
+            <div id="cardLoger">
+                <img src="Imagen/perfil.svg" alt=""/>
+                <a href="index.php" id="cerrarSession" onclick="cerrarSession()">CERRAR SESSION</a>
+            </div>
             <div id="cardPresentacion">
                 <img src="Imagen/logo.png" alt=""/>
             </div>

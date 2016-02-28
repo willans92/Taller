@@ -5,13 +5,29 @@ $(document).ready(function(){
    },function (){
        $("#titulomenu").html(titulo);
    }); 
+    $.post("Controlador/Portal_Controller.php", {proceso: 'perfil'}, function (response) {
+        var json = $.parseJSON(response);
+        if (json.error.length > 0) {
+            if ("Error Session" === json.error) {
+                $("#cerrarSession").click();
+            }
+            $("body").msmOK(json.error);
+        } else {
+            $("#cardLoger img").attr("src",json.result.foto);
+        }
+    });
 });
 function abrirFormulario(ele){
     if($(ele).attr("id")==="cliente")    
         $("#submenu").ocultar();
     else
         $("#submenu").visible(1);
+    titulo=$(ele).attr("id").toUpperCase();
+    $("#titulomenu").html(titulo);
     $("iframe").attr("src","Formularios/"+$(ele).attr("id")+".php");
+}
+function cerrarSession(){
+    $(location).attr('href',"../index.php");
 }
 var estadomenu=false;
 function submenu(){
