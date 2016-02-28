@@ -102,16 +102,86 @@ class PAGO {
         return $empresa;
     }
     function buscarMovimientoReparacion($text,$de,$hasta) {
-        $consulta = "select * from taller.PAGO where pago.descripcion like '%$text%'"
-                    . " and  pago.estado like '$estado' AND pago.tipo like 'OTROS PAGOS'"
-                    . "and YEAR(STR_TO_DATE(pago.fecha,'%e/%c/%Y'))=$ano
-                    and month(STR_TO_DATE(pago.fecha,'%e/%c/%Y')) =$mes order by id_pago DESC";
-        $result = $this->CON->consulta($consulta);
-        $empresa = $this->rellenar($result);
-        if ($empresa == null) {
+        $consulta = "
+
+            select pago.id_pago,reparacion.ot,cliente.ci,cliente.nombre,personal.nombre as adm, pago.monto,pago.fecha,pago.descripcion
+            from taller.PAGO,taller.reparacion,taller.cliente ,taller.personal, taller.auto
+            where pago.id_reparacion=reparacion.id_reparacion and personal.id_personal=pago.id_personal 
+                    and auto.id_auto=reparacion.id_auto and auto.id_cliente=cliente.id_cliente
+                    and pago.estado ='ACTIVO' AND pago.tipo like 'REPARACION'
+                    and STR_TO_DATE(pago.fecha,'%e/%c/%Y') between STR_TO_DATE('$de','%e/%c/%Y')
+                and STR_TO_DATE('$hasta','%e/%c/%Y') and (cliente.ci like '%$text%' or cliente.nombre like '%$text%'
+                or personal.nombre like '%$text%' or reparacion.ot like '%$text%') order by pago.id_pago desc 
+";
+        $resultado = $this->CON->consulta($consulta);
+        if ($resultado->num_rows > 0) {
+            $lista = array();
+            while ($row = $resultado->fetch_assoc()) {
+                $pago = array();
+                $pago["fecha"] = $row['fecha'] == null ? "" : $row['fecha'];
+                $pago["monto"] = $row['monto'] == null ? "" : $row['monto'];
+                $pago["adm"] = $row['adm'] == null ? "" : $row['adm'];
+                $pago["nombre"] = $row['nombre'] == null ? "" : $row['nombre'];
+                $pago["ci"] = $row['ci'] == null ? "" : $row['ci'];
+                $pago["ot"] = $row['ot'] == null ? "" : $row['ot'];
+                $pago["id_pago"] = $row['id_pago'] == null ? "" : $row['id_pago'];
+                $pago["nro"] = $row['descripcion'] == null ? "" : $row['descripcion'];
+                $lista[] = $pago;
+            }
+            return $lista;
+        } else {
             return null;
         }
-        return $empresa;
+    }
+    function buscarMovimientoSueldo($text,$de,$hasta) {
+        $consulta = "select pago.id_pago,personal.nombre,personal.carnet,pago.fecha_Corresponde, pago.monto,pago.fecha,pago.descripcion
+from taller.PAGO, taller.personal
+where personal.id_personal=pago.id_personal 
+	and pago.estado ='ACTIVO' AND pago.tipo like 'SUELDO'
+	and STR_TO_DATE(pago.fecha,'%e/%c/%Y') between STR_TO_DATE('$de','%e/%c/%Y')
+    and STR_TO_DATE('$hasta','%e/%c/%Y') and (personal.carnet like '%$text%' or personal.nombre like '%$text%' or pago.descripcion like '%$text%') ";
+        $resultado = $this->CON->consulta($consulta);
+        if ($resultado->num_rows > 0) {
+            $lista = array();
+            while ($row = $resultado->fetch_assoc()) {
+                $pago = array();
+                $pago["nombre"] = $row['nombre'] == null ? "" : $row['nombre'];
+                $pago["carnet"] = $row['carnet'] == null ? "" : $row['carnet'];
+                $corresponde= $row['fecha_Corresponde'] == null ? "" : $row['fecha_Corresponde'];
+                $corresponde=substr($corresponde, 3);
+                $pago["fechaC"] = $corresponde;
+                $pago["monto"] = $row['monto'] == null ? "" : $row['monto'];
+                $pago["fecha"] = $row['fecha'] == null ? "" : $row['fecha'];
+                $pago["descripcion"] = $row['descripcion'] == null ? "" : $row['descripcion'];
+                $lista[] = $pago;
+            }
+            return $lista;
+        } else {
+            return null;
+        }
+    }
+    function buscarMovimientoOtro($text,$de,$hasta) {
+        $consulta = "select pago.id_pago,personal.nombre, pago.monto,pago.fecha,pago.descripcion
+from taller.PAGO, taller.personal
+where personal.id_personal=pago.id_personal 
+	and pago.estado ='ACTIVO' AND pago.tipo like 'OTROS PAGOS'
+	and STR_TO_DATE(pago.fecha,'%e/%c/%Y') between STR_TO_DATE('$de','%e/%c/%Y')
+    and STR_TO_DATE('$hasta','%e/%c/%Y') and (personal.carnet like '%$text%' or personal.nombre like '%$text%' or pago.descripcion like '%$text%') ";
+        $resultado = $this->CON->consulta($consulta);
+        if ($resultado->num_rows > 0) {
+            $lista = array();
+            while ($row = $resultado->fetch_assoc()) {
+                $pago = array();
+                $pago["nombre"] = $row['nombre'] == null ? "" : $row['nombre'];
+                $pago["monto"] = $row['monto'] == null ? "" : $row['monto'];
+                $pago["fecha"] = $row['fecha'] == null ? "" : $row['fecha'];
+                $pago["descripcion"] = $row['descripcion'] == null ? "" : $row['descripcion'];
+                $lista[] = $pago;
+            }
+            return $lista;
+        } else {
+            return null;
+        }
     }
 
     function modificar($id_pago) {

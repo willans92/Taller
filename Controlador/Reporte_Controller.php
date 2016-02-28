@@ -55,13 +55,13 @@ if ($proceso == "Movimiento") {
         $error = "<p>El criterio de busqueda no puede tener caracteres especiales.</p>";
     } else {
         if($tipo=="reparacion"){
-            $resultado = $pago->buscarOtroPago($text, $de,$hasta,$empresasession);
+            $resultado = $pago->buscarMovimientoReparacion($text, $de,$hasta,$empresasession);
         }
         if($tipo=="sueldo"){
-            
+            $resultado = $pago->buscarMovimientoSueldo($text, $de,$hasta,$empresasession);
         }
         if($tipo=="otros pagos"){
-            
+            $resultado = $pago->buscarMovimientoOtro($text, $de,$hasta,$empresasession);
         }
     }
 }

@@ -426,7 +426,9 @@ div#formulario {
     top: -321px;
     transform: rotate(-90deg);
 }
-
+div#totalreporte {
+    display: inline-block;
+}
 #ListaMenu li:hover{
     background: white;
 }

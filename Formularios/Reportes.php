@@ -49,7 +49,7 @@
                 <center><span class='minitext'>Al darle doble click a la tabla podra ver en detalle la reparación.</span></center>
                 <div class='centrar'>
                     <button onclick='pagoReparacion(1)'  class='medio'>PAGAR</button>
-                    <button onclick='exportar("tablamoroso")' class='medio'>EXPORTAR EXCEL</button>
+                    <button onclick='exportar("tablamoroso","REPORTE_MOROSOS")' class='medio'>EXPORTAR EXCEL</button>
                     
                 </div>
             </div>
@@ -79,17 +79,19 @@
                     </tbody>
                 </table>
                  <div class='centrar'>
-                     <input type='checkbox' value='reparacion' name='tipomovimiento' checked onchange="buscarMovimiento()"/>
+                     <input type='radio' value='reparacion' name='tipomovimiento' checked onchange="buscarMovimiento('')"/>
                     <span class='negrilla'>Reparación</span>
-                    <input type='checkbox' value='sueldo' name='tipomovimiento' onchange="buscarMovimiento()"/>
+                    <input type='radio' value='sueldo' name='tipomovimiento' onchange="buscarMovimiento('')"/>
                     <span class='negrilla'>Sueldo</span>
-                    <input type='checkbox' value='otros pagos' name='tipomovimiento' onchange="buscarMovimiento()"/>
+                    <input type='radio' value='otros pagos' name='tipomovimiento' onchange="buscarMovimiento('')"/>
                     <span class='negrilla'>Otros</span>
+                    <div id="totalreporte">
+                        <span class='negrilla'>TOTAL: </span>
+                        <span class='negrilla' id="totalmovimiento">0.00</span>
+                    </div>
                 </div>
                 <div class='centrar'>
-                    <button onclick='pagoReparacion(1)'  class='medio'>PAGAR</button>
-                    <button onclick='exportar("tablamoroso")' class='medio'>EXPORTAR EXCEL</button>
-                    
+                    <button onclick='exportarMovimiento("tablaMovimiento","REPORTE_MOVIMIENTO")' class='medio'>EXPORTAR EXCEL</button>
                 </div>
             </div>
             <div id="cuerpoReparacion">

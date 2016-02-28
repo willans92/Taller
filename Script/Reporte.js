@@ -24,7 +24,14 @@ function cambioProceso(titulo, etiqueta) {
             contenedorSeleccionado = etiqueta;
             estadoCambioProseso = false;
             if ("cuerpoMoroso" === etiqueta) {
+                $("input[name=buscarMovimiento]").val("");
+                $(".fecha").val(fechaActual());
                 buscarMorosos("");
+            }
+             if ("cuerpoMovimiento" === etiqueta) {
+                 $("input[name=buscarMovimiento]").val("");
+                 $(".fecha").val(fechaActual());
+                buscarMovimiento("");
             }
         });
     } else {
@@ -115,11 +122,18 @@ function cambioProceso(titulo, etiqueta) {
         });
     }
 }
-function exportar(tabla) {
+function exportar(tabla,titulo) {
     var de =$("input[name=fechademoroso]").val().replace('///g', '_');
     var hasta =$("input[name=fechahastamoroso]").val().replace('///g', '_');
-    var titulo="HISTORIAL_DE_"+de+"_hasta_"+hasta;
-    exportarExcel(tabla,titulo);
+    var titulo2=titulo+"_DE_"+de+"_hasta_"+hasta;
+    exportarExcel(tabla,titulo2);
+}
+function exportarMovimiento(tabla,titulo) {
+    var de =$("input[name=fechademoroso]").val().replace('///g', '_');
+    var hasta =$("input[name=fechahastamoroso]").val().replace('///g', '_');
+    var tipo=$("#cuerpoMovimiento input:checked").val().toUpperCase();
+    var titulo2=titulo+"_"+tipo+"_DE_"+de+"_hasta_"+hasta;
+    exportarExcel(tabla,titulo2);
 }
 var reparacionID=0;
 var autoId=0;
@@ -273,23 +287,68 @@ function buscarMovimiento(e) {
             $("body").msmOK(json.error);
         } else {
             var html = "";
-            /*if (json.result !== null)
-            for (var i = 0; i < json.result.length; i++) {
-                var total=parseFloat(json.result[i].total);
-                var pagado=parseFloat(json.result[i].pagado);
-                var falta=(total-pagado).toFixed(2);
-                html+="<tr ondblclick='verhistorial("+json.result[i].id_auto+","+json.result[i].id_reparacion+")' data-auto='"+json.result[i].id_auto+"' data-reparacion='"+json.result[i].id_reparacion+"' data-estado='"+json.result[i].estado+"'><td><div class='normal'>"+json.result[i].ot+"</div></td>";
-                html+="<td><div class='normal'>"+json.result[i].ci+"</div></td>";
-                html+="<td><div class='grande'>"+json.result[i].nombre+"</div></td>";
-                html+="<td><div class='normal'>"+json.result[i].fecha_ingreso+"</div></td>";
-                html+="<td><div class='normal'>"+json.result[i].fecha_salida+"</div></td>";
-                html+="<td><div class='normal'>"+total+"</div></td>";
-                html+="<td><div class='normal'>"+pagado+"</div></td>";
-                html+="<td><div class='normal'>"+falta+"</div></td>";
-                html+="<td><div class='grande'>"+json.result[i].mecanico+"</div></td></tr>";
+            var total=0;
+            if(tipo=="reparacion"){
+                html+="<tr><th><div class='normal'>Fecha</div></th>";
+                html+="<th><div class='normal'>OT</div></th>";
+                html+="<th><div class='normal'>Nro. Pago</div></th>";
+                html+="<th><div class='normal'>CI</div></th>";
+                html+="<th><div class='grande'>Nombre del cliente</div></th>";
+                html+="<th><div class='grande'>Cobrador</div></th>";
+                html+="<th><div class='normal'>Monto</div></th></tr>";
+                $("#tablaMovimiento thead").html(html);
+                html="";
+                if (json.result !== null)
+                for (var i = 0; i < json.result.length; i++) {
+                    html+="<tr><td><div class='normal'>"+json.result[i].fecha+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].ot+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].nro+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].ci+"</div></td>";
+                    html+="<td><div class='grande'>"+json.result[i].nombre+"</div></td>";
+                    html+="<td><div class='grande'>"+json.result[i].adm+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].monto+"</div></td></tr>";
+                    total+=parseFloat(json.result[i].monto);
+                }
             }
-            $("#tablamoroso tbody").html(html);
-            $("#tablamoroso").igualartabla();*/
+            if(tipo=="sueldo"){
+                html+="<tr><th><div class='normal'>Fecha</div></th>";
+                html+="<th><div class='normal'>CI</div></th>";
+                html+="<th><div class='grande'>Nombre</div></th>";
+                html+="<th><div class='grande'>Detalle</div></th>";
+                html+="<th><div class='normal'>Sueldo de:</div></th>";
+                html+="<th><div class='normal'>Monto</div></th></tr>";
+                $("#tablaMovimiento thead").html(html);
+                html="";
+                if (json.result !== null)
+                for (var i = 0; i < json.result.length; i++) {
+                    html+="<tr><td><div class='normal'>"+json.result[i].fecha+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].carnet+"</div></td>";
+                    html+="<td><div class='grande'>"+json.result[i].nombre+"</div></td>";
+                    html+="<td><div class='grande'>"+json.result[i].descripcion+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].fechaC+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].monto+"</div></td></tr>";
+                    total+=parseFloat(json.result[i].monto);
+                }
+            }
+            if(tipo=="otros pagos"){
+                html+="<tr><th><div class='normal'>Fecha</div></th>";
+                html+="<th><div class='grande'>Registrado Por:</div></th>";
+                html+="<th><div class='grande2'>Descripción</div></th>";
+                html+="<th><div class='normal'>Monto</div></th></tr>";
+                $("#tablaMovimiento thead").html(html);
+                html="";
+                if (json.result !== null)
+                for (var i = 0; i < json.result.length; i++) {
+                    html+="<tr><td><div class='normal'>"+json.result[i].fecha+"</div></td>";
+                    html+="<td><div class='grande'>"+json.result[i].nombre+"</div></td>";
+                    html+="<td><div class='grande2'>"+json.result[i].descripcion+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].monto+"</div></td></tr>";
+                    total+=parseFloat(json.result[i].monto);
+                }
+            }
+            $("#totalmovimiento").text(total.toFixed(2));
+            $("#tablaMovimiento tbody").html(html);
+            $("#tablaMovimiento").igualartabla();
         }
     });
 }
