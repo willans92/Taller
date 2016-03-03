@@ -12,6 +12,7 @@ include_once "../Clases/REPARACION.php";
 include_once "../Clases/DETALLE_REPARACION.php";
 include_once "../Clases/ACCESORIO_REPARACION.php";
 include_once "../Clases/PAGO.php";
+include_once "../Clases/EMPRESA.php";
 
 error_reporting(0);
 $error = "";
@@ -33,6 +34,10 @@ if ($personalsession == null || $empresasession == null) {
     $reponse = array("error" => $error, "result" => $resultado);
     echo $_GET['callback'] . json_encode($reponse);
     return;
+}
+if ($proceso == "datosempresa") {
+    $empresa=new EMPRESA($con);
+    $resultado=$empresa->buscarXID($empresasession);
 }
 if ($proceso == "morosos") {
     $reparacion = new REPARACION($con);

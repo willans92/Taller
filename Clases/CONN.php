@@ -4,7 +4,7 @@ class CONN {
    var $servername = "127.0.0.1";
    var $username = "root";
    var $password = "";
-   var $dbname="eldebatedegusto";
+   var $dbname="taller";
    var $conn;
    var $estado;
    

@@ -373,7 +373,6 @@ function buscarEmpleadoPago(e){
                 html+="<td><div class='medio'>"+json.result[i].sueldo+"</div></td>";
                 html+="<td><div class='medio'>"+json.result[i].pagado+"</div></td>";
                 html+="<td><div class='medio'>"+json.result[i].saldo+"</div></td>";
-                html+="<td><div class='medio'>"+json.result[i].ultimoPago+"</div></td>";
                 html+="</tr>";
                 
             }
@@ -443,6 +442,26 @@ function abrirpagoSueldo(){
             $("#tablaDetallePago").igualartabla();
         }
     });   
+}
+function reiniciarOT(tipo){
+    if(tipo===1){
+        $("body").msmPregunta("Esta seguro que desea reiniciar la OT","reiniciarOT");
+        return;
+    }
+    cargando(true);
+    $.post(url, {proceso: 'reinicioOT'}, function (response) {
+        cargando(false);
+        var json = $.parseJSON(response);
+        if (json.error.length > 0) {
+            if ("Error Session" === json.error) {
+                padreSession.click();
+            }
+            $("body").msmOK(json.error);
+        } else {
+            $("input[name=ot]").val(1);
+            ok();
+        }
+    });
 }
 function pagoSueldo(e){
     if(e===1){

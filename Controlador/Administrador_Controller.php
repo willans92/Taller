@@ -170,6 +170,10 @@
         $resultado["persona"]=$personal->buscarXID($id);
         $resultado["tabla"]=$pago->buscarXPersona($id,$mes,$ano);
     }
+    if($proceso==="reinicioOT"){
+        $empresa=new EMPRESA($con);
+        $resultado=$empresa->reinicioOT($empresasession);
+    }
     if($proceso==="estadoPago"){
         $id=$_POST["id"];
         $estado=$_POST["estado"];

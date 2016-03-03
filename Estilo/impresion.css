@@ -1,0 +1,28 @@
+button{
+    display: none;
+}
+#tablaimpresion tbody {
+    height: auto;
+}
+#cuerpoImpresion{
+    top:0;
+    padding: 10px;
+    margin: 0 auto;
+    position: relative;
+    border: solid black 2px;
+    height: auto;
+    width: 740px;
+    margin-left: -15px;
+}
+
+page :left {
+ margin-left: 0cm;
+}
+@media print {
+a:link:after, a:visited:after {  
+      display: none;
+      content: ""; } 
+}
+@page{
+   margin: 0;
+}

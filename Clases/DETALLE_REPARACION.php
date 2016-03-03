@@ -42,10 +42,25 @@ class DETALLE_REPARACION {
     }
 
     function buscarXReparacion($id) {
-        $consulta = "select * from taller.DETALLE_REPARACION, taller.trabajo where id_reparacion=$id and detalle_reparacion.id_trabajos=trabajo.id_trabajo";
-        $result = $this->CON->consulta($consulta);
-        $empresa = $this->rellenar($result);
-        return $empresa;
+        $consulta = "select DETALLE_REPARACION.id_reparacion, DETALLE_REPARACION.id_trabajos, DETALLE_REPARACION.costo, trabajo.costo as costo2 ,trabajo.descripcion
+from taller.DETALLE_REPARACION, taller.trabajo 
+where id_reparacion=$id and detalle_reparacion.id_trabajos=trabajo.id_trabajo";
+        $resultado = $this->CON->consulta($consulta);
+        if ($resultado->num_rows > 0) {
+            $lista = array();
+            while ($row = $resultado->fetch_assoc()) {
+                $detalle_reparacion = new DETALLE_REPARACION();
+                $detalle_reparacion->id_reparacion = $row['id_reparacion'] == null ? "" : $row['id_reparacion'];
+                $detalle_reparacion->id_trabajos = $row['id_trabajos'] == null ? "" : $row['id_trabajos'];
+                $detalle_reparacion->costo = $row['costo'] == null ? "" : $row['costo'];
+                $detalle_reparacion->costo2 = $row['costo2'] == null ? "" : $row['costo2'];
+                $detalle_reparacion->descripcion= $row['descripcion'] == null ? "" : $row['descripcion'];
+                $lista[] = $detalle_reparacion;
+            }
+            return $lista;
+        } else {
+            return null;
+        }
     }
 
     function modificar($id_reparacion) {

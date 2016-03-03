@@ -49,7 +49,6 @@
                     <select id="tipoCuenta">
                         <option value="0">Administrador</option>
                         <option value="1">Mecanico</option>
-                        <option value="2">Recepcionista</option>
                     </select>
                     <span class='negrillaenter'>Cuenta</span>
                     <input type='text' class='medio' name='cuenta'/>
@@ -134,7 +133,6 @@
                             <th><div class="medio">Sueldo</div></th>
                             <th><div class="medio">Pagado</div></th>
                             <th><div class="medio">Saldo</div></th>
-                            <th><div class="medio">Ultimo Pago</div></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -229,6 +227,7 @@
 
                 <div class='centrar'>
                     <button onclick='actualizarEmpresa()' class='medio'>ACTUALIZAR</button>
+                    <button onclick='reiniciarOT(1)' class='medio'>REINICIAR OT</button>
                 </div>
             </div>
             <div class="background"></div>

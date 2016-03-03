@@ -17,13 +17,14 @@ class EMPRESA {
     var $telefono;
     var $fecha_finDosificacion;
     var $ot;
+    var $correo;
     var $CON;
 
     function EMPRESA($con) {
         $this->CON = $con;
     }
 
-    function contructor($id_empresa, $nombre, $razon_social, $logo, $aniversario, $fecha_afiliacion, $nit, $direccion, $nro_factura, $fecha_factura, $llave_dosificacion, $nro_autorizacion, $telefono, $fecha_finDosificacion,$ot) {
+    function contructor($id_empresa, $nombre, $razon_social, $logo, $aniversario, $fecha_afiliacion, $nit, $direccion, $nro_factura, $fecha_factura, $llave_dosificacion, $nro_autorizacion, $telefono, $fecha_finDosificacion,$ot,$correo) {
         $this->id_empresa = $id_empresa;
         $this->nombre = $nombre;
         $this->razon_social = $razon_social;
@@ -39,6 +40,7 @@ class EMPRESA {
         $this->nro_autorizacion = $nro_autorizacion;
         $this->fecha_finDosificacion = $fecha_finDosificacion;
         $this->telefono = $telefono;
+        $this->correo = $correo;
     }
 
     function rellenar($resultado) {
@@ -61,6 +63,7 @@ class EMPRESA {
                 $empresa->nro_autorizacion = $row['nro_autorizacion'] == null ? "" : $row['nro_autorizacion'];
                 $empresa->fecha_finDosificacion = $row['fecha_finDosificacion'] == null ? "" : $row['fecha_finDosificacion'];
                 $empresa->telefono = $row['telefono'] == null ? "" : $row['telefono'];
+                $empresa->correo = $row['correo'] == null ? "" : $row['correo'];
                 $lista[] = $empresa;
             }
             return $lista;
@@ -131,11 +134,11 @@ class EMPRESA {
     }
 
     function modificar($id_empresa) {
-        $consulta = "update taller.EMPRESA set nombre ='" . $this->nombre . "', razon_social ='" . $this->razon_social . "', logo ='" . $this->logo . "', aniversario ='" . $this->aniversario . "', nit ='" . $this->nit . "', direccion ='" . $this->direccion . "', nro_factura ='" . $this->nro_factura . "', fecha_factura ='" . $this->fecha_factura . "', llave_dosificacion ='" . $this->llave_dosificacion . "', nro_autorizacion ='" . $this->nro_autorizacion . "', telefono='$this->telefono',fecha_finDosificacion='$this->fecha_finDosificacion' where id_empresa=" . $id_empresa;
+        $consulta = "update taller.EMPRESA set correo='$this->correo', nombre ='" . $this->nombre . "', razon_social ='" . $this->razon_social . "', logo ='" . $this->logo . "', aniversario ='" . $this->aniversario . "', nit ='" . $this->nit . "', direccion ='" . $this->direccion . "', nro_factura ='" . $this->nro_factura . "', fecha_factura ='" . $this->fecha_factura . "', llave_dosificacion ='" . $this->llave_dosificacion . "', nro_autorizacion ='" . $this->nro_autorizacion . "', telefono='$this->telefono',fecha_finDosificacion='$this->fecha_finDosificacion' where id_empresa=" . $id_empresa;
         return $this->CON->manipular($consulta);
     }
     function reinicioOT($id_empresa) {
-        $consulta = "update taller.EMPRESA set ot=0 where id_empresa=" . $id_empresa;
+        $consulta = "update taller.EMPRESA set ot=1 where id_empresa=" . $id_empresa;
         return $this->CON->manipular($consulta);
     }
     function aumentarOT($id_empresa) {

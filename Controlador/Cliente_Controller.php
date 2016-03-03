@@ -95,6 +95,10 @@ if ($proceso == "cliente") {
         $resultado["auto"] = $auto->buscarXCliente($id);
     }
 }
+if ($proceso == "datosempresa") {
+    $empresa=new EMPRESA($con);
+    $resultado=$empresa->buscarXID($empresasession);
+}
 if ($proceso == "abrirReparacion") {
     $auto = new AUTO($con);
     $personal = new PERSONAL($con);
@@ -138,9 +142,11 @@ if ($proceso == "registrarReparacion") {
     $salida = $_POST['salida'];
     $combustible = $_POST['combustible'];
     $estado= $_POST['estado'];
+    $recibo= $_POST['recibo'];
+    $factura= $_POST['factura'];
     $idreparacion = $_POST['idreparacion'];
     $con->transacion();
-    $reparacion->contructor($idreparacion, $ingreso,$salida, $km, $combustible, $ot, $auto, $total,$estado, $mecanico);
+    $reparacion->contructor($idreparacion, $ingreso,$salida, $km, $combustible, $ot, $auto, $total,$estado, $mecanico,$recibo,$factura);
     $resultado=array();
     if($idreparacion==0){
         $resultado["id"]=$reparacion->insertar();

@@ -109,9 +109,33 @@ class PERSONAL {
                                         and personal.carnet like '%$text%' and personal.nombre like '%$text%'
                                 group by personal.carnet,personal.nombre,personal.sueldo,personal.id_personal
                                 having sum(pago.monto)=personal.sueldo";
+            $result = $this->CON->consulta($consulta);
+            if ($result->num_rows > 0) {
+                $lista = array();
+                while ($row = $result->fetch_assoc()) {
+                    $personal = array();
+                    $monto= 0;
+                    $sueldo= $row['sueldo'] == null ? 0 : $row['sueldo'];
+                    if($row["pagado1"]!=null){
+                        $monto= $row['pagado1'] == null ? 0 : $row['pagado1'];
+                        $personal['ultimoPago'] = $row['ultimoPago1'] == null ? "" : $row['ultimoPago1'];
+                    }else{
+                        $personal['ultimoPago'] = $row['ultimoPago'] == null ? "" : $row['ultimoPago'];
+                        $monto= $row['pagado'] == null ? 0 : $row['pagado'];
+                    }
+                    if($monto==$sueldo && $estado!=="PAGADO")continue;
+                    $personal['id_personal'] = $row['id_personal'] == null ? "" : $row['id_personal'];
+                    $personal['carnet'] = $row['carnet'] == null ? "" : $row['carnet'];
+                    $personal['nombre'] = $row['nombre'] == null ? "" : $row['nombre'];
+                    $personal['sueldo'] =$sueldo;
+                    $personal['pagado'] = $monto;
+                    $personal['saldo'] = $sueldo-$monto;
+                    $lista[] = $personal;
+                }
+                return $lista;
+            }
         }else{
-            $consulta = "select  * 
-from  (	select personal.carnet,personal.nombre,personal.sueldo,personal.id_personal,sum(pago.monto) as pagado1, max(pago.fecha) as ultimoPago1
+            $consulta = "select personal.id_personal,personal.carnet,personal.nombre,personal.sueldo,personal.id_personal,sum(pago.monto) as pagado, max(pago.fecha) as ultimoPago1
 		from taller.pago join taller.personal on personal.id_personal=pago.id_personal
 		where pago.tipo='SUELDO' and pago.estado='ACTIVO'
 				and (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))>$ano 
@@ -122,48 +146,62 @@ from  (	select personal.carnet,personal.nombre,personal.sueldo,personal.id_perso
 				and month(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>=$mes)))
 				and YEAR(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y'))=$ano
 				and month(STR_TO_DATE(pago.fecha_Corresponde,'%e/%c/%Y')) =$mes
-				and personal.carnet like '%$text%' and personal.nombre like '%$text%'
-		group by personal.carnet,personal.nombre,personal.sueldo,personal.id_personal
-		) sueldo1 right join
-
-		(select personal.carnet,personal.nombre,personal.sueldo,personal.id_personal,0 as pagado, '--/--/----' as ultimoPago 
-		from taller.personal
-		where (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))>$ano 
-				or (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))=$ano 
-				and month(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))<=$mes))
-				and (personal.fecha_retirado='' or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>$ano 
-				or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))=$ano 
-				and month(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>=$mes)))
-				and personal.carnet like '%$text%' and personal.nombre like '%$text%') sueldo2 on sueldo2.id_personal =sueldo2.id_personal";
-        }
-        
-        $result = $this->CON->consulta($consulta);
-        if ($result->num_rows > 0) {
+				and personal.carnet like '%$result%' and personal.nombre like '%$result%'
+		group by personal.carnet,personal.nombre,personal.sueldo,personal.id_personal";
+            $result = $this->CON->consulta($consulta);
+            $registrados="";
             $lista = array();
-            while ($row = $result->fetch_assoc()) {
-                $personal = array();
-                $monto= 0;
-                $sueldo= $row['sueldo'] == null ? 0 : $row['sueldo'];
-                if($row["pagado1"]!=null){
-                    $monto= $row['pagado1'] == null ? 0 : $row['pagado1'];
-                    $personal['ultimoPago'] = $row['ultimoPago1'] == null ? "" : $row['ultimoPago1'];
-                }else{
-                    $personal['ultimoPago'] = $row['ultimoPago'] == null ? "" : $row['ultimoPago'];
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $personal = array();
+                    $monto= 0;
+                    $sueldo= $row['sueldo'] == null ? 0 : $row['sueldo'];
                     $monto= $row['pagado'] == null ? 0 : $row['pagado'];
+                    $registrados.=$row['id_personal'].",";    
+                    if($monto==$sueldo && $estado!=="PAGADO")continue;
+                    $personal['ultimoPago'] = $row['ultimoPago'] == null ? "" : $row['ultimoPago'];
+                    $personal['carnet'] = $row['carnet'] == null ? "" : $row['carnet'];
+                    $personal['id_personal'] = $row['id_personal'] == null ? "" : $row['id_personal'];
+                    $personal['nombre'] = $row['nombre'] == null ? "" : $row['nombre'];
+                    $personal['sueldo'] =$sueldo;
+                    $personal['pagado'] = $monto;
+                    $personal['saldo'] = $sueldo-$monto;
+                    $lista[] = $personal;
                 }
-                if($monto==$sueldo && $estado!=="PAGADO")continue;
-                $personal['id_personal'] = $row['id_personal'] == null ? "" : $row['id_personal'];
-                $personal['carnet'] = $row['carnet'] == null ? "" : $row['carnet'];
-                $personal['nombre'] = $row['nombre'] == null ? "" : $row['nombre'];
-                $personal['sueldo'] =$sueldo;
-                $personal['pagado'] = $monto;
-                $personal['saldo'] = $sueldo-$monto;
-                $lista[] = $personal;
+            }
+            if(strlen($registrados)>0){
+                $registrados=" and personal.id_personal not in(".substr($registrados,0,strlen($registrados)-1).")";
+            }
+            $consulta = "select personal.id_personal,personal.carnet,personal.nombre,personal.sueldo,personal.id_personal,0 as pagado, '--/--/----' as ultimoPago "; 
+            $consulta .= "from taller.personal ";
+            $consulta .= "where (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))>$ano "; 
+	    $consulta .= "or (YEAR(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))=$ano "; 
+	    $consulta .= "and month(STR_TO_DATE(personal.fecha_ingreso,'%e/%c/%Y'))<=$mes)) ";
+	    $consulta .= "and (personal.fecha_retirado='' or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>$ano "; 
+	    $consulta .= "or (YEAR(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))=$ano ";
+	    $consulta .= "and month(STR_TO_DATE(personal.fecha_retirado,'%e/%c/%Y'))>=$mes))) ";
+	    $consulta .= "and personal.carnet like '%$text%' and personal.nombre like '%$text%' $registrados ";
+            $result = $this->CON->consulta($consulta);
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    $personal = array();
+                    $monto= 0;
+                    $sueldo= $row['sueldo'] == null ? 0 : $row['sueldo'];
+                    $personal['ultimoPago'] = $row['ultimoPago'] == null ? "" : $row['ultimoPago'];
+                    $personal['id_personal'] = $row['id_personal'] == null ? "" : $row['id_personal'];
+                    $monto= $row['pagado'] == null ? 0 : $row['pagado'];
+                    $personal['carnet'] = $row['carnet'] == null ? "" : $row['carnet'];
+                    $personal['nombre'] = $row['nombre'] == null ? "" : $row['nombre'];
+                    $personal['sueldo'] =$sueldo;
+                    $personal['pagado'] = $monto;
+                    $personal['saldo'] = $sueldo-$monto;
+                    $lista[] = $personal;
+                }
             }
             return $lista;
-        } else {
-            return null;
         }
+        return null;
+        
     }
     
 

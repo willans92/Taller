@@ -52,6 +52,56 @@ function cambioProceso(titulo, etiqueta) {
                     $("#fotoPerfil img").attr("src","../Imagen/perfil.svg");
                     buscarClientes("");
                 }
+                if ("cuerpoImpresion" === etiqueta) {
+                    if(reparacionID==0){
+                        $("#tituloimpresion").html("COTIZACION DE LA REPARACION");
+                    }else{
+                        $("#tituloimpresion").html("DETALLE DE LA REPARACION");
+                    }
+                    if($("#mecanico option:selected").val()!=0){
+                        $("#mecanicoimpresion").html($("#mecanico option:selected").text());
+                    }else{
+                        $("#mecanicoimpresion").html("");
+                    }
+                    cargando(true);
+                    $.post(url, {proceso: 'datosempresa'}, function (response) {
+                        cargando(false);
+                        var json = $.parseJSON(response);
+                        if (json.error.length > 0) {
+                            if ("Error Session" === json.error) {
+                                padreSession.click();
+                            }
+                            $("body").msmOK(json.error);
+                        } else {
+                            $("#logoimpresion").attr("src",json.result.logo);
+                            $("#direccionimpresion").text(json.result.direccion);
+                            $("#telefonoimpresion").text(json.result.telefono);
+                            $("#nombreimpresion").text(json.result.nombre);
+                            $("#correoimpresion").text(json.result.correo);
+                            $("#marcaimpresion").html($("#marcareparacion").text());
+                            $("#vehiculoimpresion").html($("#vehiculoreparacion").text());
+                            $("#placaimpresion").html($("#placareparacion").text());
+                            $("#observacionimpresion").html($("#obsreparacion").text());
+                            var html="";
+                            var lista = $("#contenedorTrabajo input");
+                            var total=0;
+                            for (var i = 0; i < lista.length; i++) {
+                                var valor=parseFloat($(lista[i]).val());
+                                var precioreal=parseFloat($(lista[i]).data("val"));
+                                var descuento=precioreal-valor;
+                                html+="<tr><td><div class='chico'>1</div></td>";
+                                html+="<td><div class='grande'>"+$(lista[i]).prev().html()+"</div></td>";
+                                html+="<td><div class='pequeno'>"+precioreal+"</div></td>";
+                                html+="<td><div class='chico'>"+descuento.toFixed(2)+"</div></td>";
+                                html+="<td><div class='chico'>"+valor.toFixed(2)+"</div></td></tr>";
+                                total+=valor;
+                            }
+                            $("#totalimpr").html(total.toFixed(2));
+                            $("#tablaimpresion tbody").html(html);
+                        }
+                    });
+                    
+                }
                 if ("cuerpoHistorial" === etiqueta) {
                      $("#cuerpoHistorial .fecha").val(fechaActual());
                     historial();
@@ -93,6 +143,7 @@ function cambioProceso(titulo, etiqueta) {
                                 $("#repara2 input").attr("readonly",true);
                                 $("#repara2 select").attr("disabled",true);
                                 $("#atrasrepara").visible();
+                                $("#imprimirbtn").visible();
                                 $("input[name=fechaIngresoReparacion]").attr("disabled",true);
                             }else{
                                 $("#cuerpoReparacion .mas").visible();
@@ -125,6 +176,8 @@ function cambioProceso(titulo, etiqueta) {
                                 $("input[name=fechaIngresoReparacion]").val(json.result.reparacion.fecha_Ingreso);
                                 $("input[name=fechaSalidaReparacion]").val(json.result.reparacion.fecha_salida);
                                 $("input[name=combustibleReparacion]").val(json.result.reparacion.combustible);
+                                $("input[name=reciboReparacion]").val(json.result.reparacion.recibo);
+                                $("input[name=facturaReparacion]").val(json.result.reparacion.factura);
                                 estadoReparacion = json.result.reparacion.estado;
                                 reparacionID = json.result.reparacion.id_reparacion;
                             }else{
@@ -142,9 +195,9 @@ function cambioProceso(titulo, etiqueta) {
                                     html += "<div class='itemTrabajo'>";
                                     html += "<div class='medio'>" + listatrabajo[i].descripcion + "</div>";
                                     if(modoHistorial){
-                                        html += "<input type='number' class='pequeno' data-id='" + listatrabajo[i].id_trabajos + "' value='" + listatrabajo[i].costo + "' step='0.5' min='0' readonly>";
+                                        html += "<input type='number' class='pequeno' data-id='" + listatrabajo[i].id_trabajos + "' data-val='" + listatrabajo[i].costo2 + "' value='" + listatrabajo[i].costo + "' step='0.5' min='0' readonly>";
                                     }else{
-                                        html += "<input type='number' class='pequeno' data-id='" + listatrabajo[i].id_trabajos + "' value='" + listatrabajo[i].costo + "' step='0.5' min='0' onchange='TotalTrabajo()'>";
+                                        html += "<input type='number' class='pequeno' data-id='" + listatrabajo[i].id_trabajos + "' data-val='" + listatrabajo[i].costo2 + "' value='" + listatrabajo[i].costo + "' step='0.5' min='0' onchange='TotalTrabajo()'>";
                                     }
                                     html += "</div>";
                                     total += parseFloat(listatrabajo[i].costo);
@@ -173,6 +226,12 @@ var autoId = 0;
 var estadoReparacion = "activo falta pago";
 var reparacionID = 0;
 var modoHistorial=false;
+function imprimir(){
+    $("#cuerpoImpresion").css({
+        height: "auto"
+    });
+    window.print();
+}
 function historial(){
     var de=$("input[name=fechadeHistorial]").val();
     var hasta=$("input[name=fechahastaHistorial]").val();
@@ -194,6 +253,8 @@ function historial(){
                     html+="<td><div class='normal'>"+json.result[i].kilometro+"</div></td>";
                     html+="<td><div class='normal'>"+json.result[i].combustible+"</div></td>";
                     html+="<td><div class='normal'>"+json.result[i].OT+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].factura+"</div></td>";
+                    html+="<td><div class='normal'>"+json.result[i].recibo+"</div></td>";
                     html+="<td><div class='normal'>"+json.result[i].total+"</div></td>";
                     html+="<td><div class='normal'>"+json.result[i].estado+"</div></td></tr>";// cambia por moroso , finalizado , reparando
                 }
@@ -298,6 +359,8 @@ function registrarReparacion() {
     var km = $("input[name=kilometroReparacion]").val();
     var ingreso = $("input[name=fechaIngresoReparacion]").val();
     var combustible = $("input[name=combustibleReparacion]").val();
+    var recibo = $("input[name=reciboReparacion]").val();
+    var factura = $("input[name=facturaReparacion]").val();
     var total=$("#totaltrabajo").text();
     var salida="";
     if (estadoReparacion == "") {
@@ -307,7 +370,7 @@ function registrarReparacion() {
         salida = fechaActual();
     }
     cargando(true);
-    $.post(url, {proceso: 'registrarReparacion', accesorio: accesorios, trabajo: trabajo
+    $.post(url, {proceso: 'registrarReparacion', recibo:recibo,factura:factura, accesorio: accesorios, trabajo: trabajo
         , mecanico: mecanico, ot: ot, km: km, ingreso: ingreso,salida:salida, total:total,combustible: combustible
         , idreparacion: reparacionID, auto: autoId, estado: estadoReparacion}, function (response) {
         cargando(false);
@@ -848,7 +911,7 @@ function masTrabajo(tipo) {
             var item = $(lista[i]).parent().parent();
             html += "<div class='itemTrabajo'>";
             html += "<div class='medio'>" + item.next().find("input").val() + "</div>";
-            html += "<input type='number' class='pequeno' data-id='" + item.parent().data("id") + "' value='" + item.next().next().find("input").val() + "' onchange='TotalTrabajo()' step='0.5' min='0'>";
+            html += "<input type='number' class='pequeno' data-id='" + item.parent().data("id") + "' data-val='" +  item.next().next().find("input").data("val")  + "' value='" + item.next().next().find("input").val() + "' onchange='TotalTrabajo()' step='0.5' min='0'>";
             html += "</div>";
             total += parseFloat(item.next().next().find("input").val());
         }
@@ -877,7 +940,7 @@ function masTrabajo(tipo) {
             for (var i = 0; i < json.result.length; i++) {
                 html += "<tr data-id='" + json.result[i].id_trabajo + "'><td><div class='pequeno'><input type='checkbox' value='" + json.result[i].id_trabajo + "'></div></td>";
                 html += "<td><div class='grande'><input type='text' value='" + json.result[i].descripcion + "'></div></td>";
-                html += "<td><div class='normal'><input type='text' value='" + json.result[i].costo + "'></div></td><tr>";
+                html += "<td><div class='normal'><input type='text' data-val='" +  json.result[i].costo  + "'  value='" + json.result[i].costo + "'></div></td><tr>";
             }
             $("#tablaTrabajo tbody").html(html);
             var lista = $("#contenedorTrabajo input");
@@ -891,7 +954,6 @@ function masTrabajo(tipo) {
         }
     });
 }
-
 function crearAccesorio(e) {
     if (e.keyCode === 13) {
         var text = $("#popacesorio input[name=accesoriotxt]").val();
@@ -948,7 +1010,7 @@ function crearTrabajo() {
         } else {
             $("body").msmOK("Se creo el trabajo correctamente.");
             var html = "";
-            html += "<tr data-id='" + response + "'><td><div class='pequeno'><input type='checkbox' value='" + response + "'></div></td>";
+            html += "<tr data-id='" + response + "'><td><div class='pequeno'><input type='checkbox' value='" + json.result + "'></div></td>";
             html += "<td><div class='grande'><input type='text' value='" + desc + "'></div></td>";
             html += "<td><div class='normal'><input type='text' value='" + precio + "'></div></td><tr>";
             $("#tablaTrabajo tbody").append(html);

@@ -9,7 +9,7 @@
         <script src="Script/Portal.js" type="text/javascript"></script>
         <title>Portal</title>
     </head>
-    <body>
+    <body id="fondoImg">
         <div id="cuerpoPrincipal">
             <div id="cardLoger">
                 <img src="Imagen/perfil.svg" alt=""/>

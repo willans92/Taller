@@ -53,6 +53,55 @@
                     
                 </div>
             </div>
+            <div id="cuerpoImpresion">
+                <div class='contenedor30 centrar'>
+                    <img src="../Imagen/Logo_taller.png" alt="" id="logoimpresion"/>
+                </div>
+                <div class='contenedor70 centrar'>
+                    <div id="tituloimpresion">COTIZACION DE REPARACION</div>
+                    <span class='negrilla'>Dirección:</span>
+                    <span id="direccionimpresion">Av. Bolivar # 560</span>
+                    <span class='negrilla'>Telefono:</span>
+                    <span id="telefonoimpresion" >3345100 - 75685675</span>
+                    <span class='negrilla'>Correo:</span>
+                    <span id="correoimpresion" >3345100 - 75685675</span>
+                    <span class='negrillaenter' id="nombreimpresion">RONY TALLER</span>
+                </div>
+                <div id="cuerpoimpresiontable" class="clear">
+                    <span class='negrilla'>Mecanico:</span>
+                    <div id="mecanicoimpresion" ></div>
+                    <span class='negrilla'>Vehiculo:</span>
+                    <div id="vehiculoimpresion" ></div>
+                    <span class='negrilla'>Marca:</span>
+                    <div id="marcaimpresion" ></div>
+                    <span class='negrilla'>Placa:</span>
+                    <div id="placaimpresion" ></div>
+                     <table id='tablaimpresion' cellspacing="0">
+                        <thead >
+                            <th><div class='chico'>Cant.</div></th>
+                            <th><div class='grande'>Descripción de Trabajo</div></th>
+                            <th><div class='pequeno'>Precio Unitario</div></th>
+                            <th><div class='chico'>Descuento</div></th>
+                            <th><div class='chico'>Total</div></th>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                    <div class='alineacionIzquierda'>
+                        <span class='negrilla'>Observación</span>
+                        <div id="observacionimpresion"></div>
+                    </div>
+                    <div id="totalimpresion">
+                        <span class='negrilla'>TOTAL: </span>
+                        <div id="totalimpr" class="centrar">0.00</div>
+                    </div>
+                     <div class='centrar clear'>
+                        <button onclick='cambioProceso("Reparacion", "cuerpoReparacion")' class='normal'>ATRAS</button>
+                        <button onclick='imprimir()' class='normal' >IMPRIMIR</button>
+                    </div>
+                </div>
+            </div>
             <div id="cuerpoMovimiento">
                 <div class='centrar'>
                     <input type='text' class='medio' name='buscarMovimiento' placeholder="CRITERIO DE BUSQUEDA" onkeyup="buscarMovimiento(event)"/>
@@ -133,12 +182,16 @@
                         <input type='number' class='normal' step="0.5" min="0" name='kilometroReparacion'/>
                         <span class='negrillaenter'>O.T</span>
                         <input type='text' class='normal' name='otReparacion'/>
+                        <span class='negrillaenter'>Nro. Recibo</span>
+                        <input type='text' class='normal' name='reciboReparacion'/>
                     </div>
                     <div class='contenedor50' >
                         <span class='negrillaenter'>Fecha Salida</span>
                         <input type='text' class='normal' name='fechaSalidaReparacion' readonly/>
                         <span class='negrillaenter'>Combustible</span>
                         <input type='number' class='normal' step="0.5" min="0" name='combustibleReparacion'/>
+                        <span class='negrillaenter'>Nro. Factura</span>
+                        <input type='text' class='normal' name='facturaReparacion'/>
                     </div>
                     <div class="clear"></div>
                     <span class='negrillaenter'>TRABAJO</span>
@@ -152,6 +205,7 @@
                 </div>
                 <div class='centrar'>
                     <button onclick="cambioProceso('Morosos', 'cuerpoMoroso')" class='normal' id="atrasrepara">ATRAS</button>
+                    <button onclick='cambioProceso("", "cuerpoImpresion")' class='normal' id="imprimirbtn" >IMPRIMIR</button>
                 </div>
             </div>
             

@@ -39,6 +39,7 @@ table div{
 }
 table td, table th{
     padding:0 2px;
+
 }
 table td input,table td select{
     width: 100%;
@@ -165,6 +166,11 @@ button{
 }
 .contenedor70{
     width: 69%;
+    float: left;
+    padding: 0;
+}
+.contenedor50{
+    width: 50%;
     float: left;
     padding: 0;
 }
@@ -454,7 +460,7 @@ div#totalreporte {
 }
 div#cuerpoRegistroPersonal,div#cuerpoOtrosPagos,div#cuerpoDatosEmpresa
 ,#cuerpoListadoEmpleado,#cuerpoEmpleadoPago , #cuerpoListadoCliente, #cuerpoNuevoCliente
-,#cuerpoReparacion,#cuerpoHistorial,#cuerpoMoroso,#cuerpoMovimiento{
+,#cuerpoReparacion,#cuerpoHistorial,#cuerpoMoroso,#cuerpoMovimiento,#cuerpoImpresion{
     position: absolute;
     top:295px;
     left:330px;
@@ -580,7 +586,7 @@ div#contenedorAccesorios {
     overflow: auto;
 }
 div#contenedorTrabajo{
-    height: 190px;
+    height: 165px;
     overflow: auto;
 }
 .cuerpo{
@@ -610,9 +616,64 @@ span#totaltrabajo {
 #tablaPago tbody{
     height: 200px;
 }
+#fondoImg{
+    background-image: url('../Imagen/fondo.jpg');
+    background-size: 100%;
+}
 div#poppago {
     width: 479px;
 }
 #cardLoger img{width: 130px;height: 96px;margin-top: 13px;margin-bottom: 5px;border-radius: 8px;box-shadow: 0 0 2px 1px black;}
 #cerrarSession:hover{font-size: 13px;}
 #cerrarSession{ cursor: pointer;color: black;font-weight: bold;text-decoration: none;}
+img#logoimpresion {
+    width: 140px;
+    height: 80px;
+    margin-bottom: 20px;
+}
+div#tituloimpresion {
+    font-size: 19px;
+    font-weight: bold;
+}
+span#nombreimpresion {
+    font-size: 16.5px;
+}
+
+#tablaimpresion tbody {
+    height: 220px;
+}
+div#totalimpresion div{
+    text-align: center;
+    width: 82px;
+    display: inline-block;
+    padding: 0;
+}
+div#totalimpresion {
+    float: right;
+    width: 150px;
+}
+#tablaimpresion tr {
+    border-bottom: black 1px solid;
+}
+#tablaimpresion thead {
+    color:black;
+    background: white;
+}
+div#mecanicoimpresion {
+    width: 505px;
+    display: inline-block;
+}
+div#vehiculoimpresion, div#marcaimpresion,div#placaimpresion {
+    display: inline-block;
+    width: 133px;
+}
+#tablaimpresion td, #tablaimpresion th{
+    padding:0 2px;
+    background: white;
+    border-bottom: solid black 1px;
+
+}
+div#observacionimpresion {
+    display: inline-block;
+    width: 325px;
+}

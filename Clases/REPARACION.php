@@ -12,17 +12,21 @@ class REPARACION {
     var $total;
     var $estado;
     var $id_personal;
+    var $recibo;
+    var $factura;
     var $CON;
 
     function REPARACION($con) {
         $this->CON = $con;
     }
 
-    function contructor($id_reparacion, $fecha_Ingreso, $fecha_salida, $kilometro, $combustible, $OT, $id_auto, $total, $estado, $id_personal) {
+    function contructor($id_reparacion, $fecha_Ingreso, $fecha_salida, $kilometro, $combustible, $OT, $id_auto, $total, $estado, $id_personal,$recibo,$factura) {
         $this->id_reparacion = $id_reparacion;
         $this->fecha_Ingreso = $fecha_Ingreso;
         $this->fecha_salida = $fecha_salida;
         $this->kilometro = $kilometro;
+        $this->recibo = $recibo;
+        $this->factura = $factura;
         $this->combustible = $combustible;
         $this->OT = $OT;
         $this->id_auto = $id_auto;
@@ -45,6 +49,8 @@ class REPARACION {
                 $reparacion->id_auto = $row['id_auto'] == null ? "" : $row['id_auto'];
                 $reparacion->total = $row['total'] == null ? "" : $row['total'];
                 $reparacion->estado = $row['estado'] == null ? "" : $row['estado'];
+                $reparacion->recibo = $row['recibo'] == null ? "" : $row['recibo'];
+                $reparacion->factura = $row['factura'] == null ? "" : $row['factura'];
                 $reparacion->id_personal = $row['id_personal'] == null ? "" : $row['id_personal'];
                 $lista[] = $reparacion;
             }
@@ -123,7 +129,7 @@ class REPARACION {
         if($this->id_personal!=0){
             $empleado=", id_personal=$this->id_personal";
         }
-        $consulta = "update taller.REPARACION set fecha_Ingreso ='" . $this->fecha_Ingreso . "', fecha_salida='$this->fecha_salida', kilometro ='" . $this->kilometro . "', combustible ='" . $this->combustible . "', OT ='" . $this->OT . "', estado ='" . $this->estado . "' $empleado where id_reparacion=" . $id_reparacion;
+        $consulta = "update taller.REPARACION set recibo='$this->recibo', factura='$this->factura', fecha_Ingreso ='" . $this->fecha_Ingreso . "', fecha_salida='$this->fecha_salida', kilometro ='" . $this->kilometro . "', combustible ='" . $this->combustible . "', OT ='" . $this->OT . "', estado ='" . $this->estado . "' $empleado where id_reparacion=" . $id_reparacion;
         return $this->CON->manipular($consulta);
     }
     function modificarTotal($id_reparacion,$total,$estado) {
@@ -150,7 +156,7 @@ class REPARACION {
             $empleado=", id_personal";
             $empleadoid=", $this->id_personal";    
         }
-        $consulta = "insert into taller.REPARACION(id_reparacion, fecha_Ingreso, kilometro, combustible, OT, id_auto, estado $empleado) values(" . $this->id_reparacion . ",'" . $this->fecha_Ingreso . "','" . $this->kilometro . "','" . $this->combustible . "','" . $this->OT . "'," . $this->id_auto . ",'" . $this->estado . "'  $empleadoid)";
+        $consulta = "insert into taller.REPARACION(id_reparacion, fecha_Ingreso, kilometro, combustible, OT, id_auto, estado $empleado ,recibo,factura) values(" . $this->id_reparacion . ",'" . $this->fecha_Ingreso . "','" . $this->kilometro . "','" . $this->combustible . "','" . $this->OT . "'," . $this->id_auto . ",'" . $this->estado . "'  $empleadoid , '$this->recibo', '$this->factura')";
         $resultado = $this->CON->manipular($consulta);
         if(!$resultado){
             return 0;
