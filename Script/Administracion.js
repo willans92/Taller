@@ -682,6 +682,7 @@ function datosEmpresa(){
             $("input[name=autorizacion]").val(json.result.nro_autorizacion);
             $("input[name=findosificacion]").val(json.result.fecha_finDosificacion);
             $("input[name=telefonoTaller]").val(json.result.telefono);
+            $("input[name=correoTaller]").val(json.result.correo);
             $("input[name=ot]").val(json.result.ot);
         }
     });
@@ -697,6 +698,7 @@ function actualizarEmpresa(){
     var llavedosificacion=$("input[name=llaveDosificacion]").val().trim();
     var autorizacion=$("input[name=autorizacion]").val().trim();
     var telefono=$("input[name=telefonoTaller]").val().trim();
+    var correo=$("input[name=correoTaller]").val().trim();
     var error="";
     if(nit.length===0){
         error+="<p>El nit no puede estar vacío.</p>";
@@ -726,7 +728,7 @@ function actualizarEmpresa(){
         error+="<p>La autorizacion no puede tener caracteres especiales.</p>";
     }
     cargando(true);
-    $.post(url, {proceso: 'actualizardatosEmpresa',nombre:nombre,rz:rz,logo:logo,aniversario:aniversario
+    $.post(url, {proceso: 'actualizardatosEmpresa',correo:correo,nombre:nombre,rz:rz,logo:logo,aniversario:aniversario
         ,nit:nit,direccion:direccion,fechadosificacion:fechadosificacion,llave:llavedosificacion,autorizacion:autorizacion,telefono:telefono}, function (response) {
         cargando(false);
         var json = $.parseJSON(response);

@@ -204,6 +204,8 @@
                     <input type='text' class='grande2' name='direccionTaller'/>
                     <span class='negrillaenter'>Telefono</span>
                     <input type='text' class='medio' name='telefonoTaller'/>
+                    <span class='negrillaenter'>Correo</span>
+                    <input type='text' class='grande2' name='correoTaller'/>
                     <span class='negrillaenter'>Aniversario del taller</span>
                     <input type='text' class='normal fecha' name='aniversarioTaller'/>
                     <span class='negrillaenter'>O.T</span>

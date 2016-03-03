@@ -246,6 +246,7 @@
         $llave=$_POST["llave"];
         $autorizacion=$_POST["autorizacion"];
         $telefono=$_POST["telefono"];
+        $correo=$_POST["correo"];
         if(strlen(nit)===0){
            $error.="<p>El nit no puede estar vacío.</p>";
         }
@@ -279,7 +280,7 @@
         $fecha_finDosificacion = date ( 'j/m/Y' , $fecha_finDosificacion );
         $fecha_finDosificacion = strlen($fecha_finDosificacion)==9?"0$fecha_finDosificacion":$fecha_finDosificacion; */
         if($error==""){
-            $resultado=$empresa->contructor($empresasession, $nombre, $rz, $logo, $aniversario, 0, $nit, $direccion, 0, $fechadosificacion, $llave, $autorizacion, $telefono, $fecha_finDosificacion);
+            $resultado=$empresa->contructor($empresasession, $nombre, $rz, $logo, $aniversario, 0, $nit, $direccion, 0, $fechadosificacion, $llave, $autorizacion, $telefono, $fecha_finDosificacion,0,$correo);
             if(!$empresa->modificar($empresasession)){
                 $error="No se pudieron actualizar los datos de la empresa. Intenete nuevamente.";
             }else{

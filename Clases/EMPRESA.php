@@ -134,7 +134,7 @@ class EMPRESA {
     }
 
     function modificar($id_empresa) {
-        $consulta = "update taller.EMPRESA set correo='$this->correo', nombre ='" . $this->nombre . "', razon_social ='" . $this->razon_social . "', logo ='" . $this->logo . "', aniversario ='" . $this->aniversario . "', nit ='" . $this->nit . "', direccion ='" . $this->direccion . "', nro_factura ='" . $this->nro_factura . "', fecha_factura ='" . $this->fecha_factura . "', llave_dosificacion ='" . $this->llave_dosificacion . "', nro_autorizacion ='" . $this->nro_autorizacion . "', telefono='$this->telefono',fecha_finDosificacion='$this->fecha_finDosificacion' where id_empresa=" . $id_empresa;
+        $consulta = "update taller.EMPRESA set correo='" . $this->correo . "', nombre ='" . $this->nombre . "', razon_social ='" . $this->razon_social . "', logo ='" . $this->logo . "', aniversario ='" . $this->aniversario . "', nit ='" . $this->nit . "', direccion ='" . $this->direccion . "', nro_factura ='" . $this->nro_factura . "', fecha_factura ='" . $this->fecha_factura . "', llave_dosificacion ='" . $this->llave_dosificacion . "', nro_autorizacion ='" . $this->nro_autorizacion . "', telefono='$this->telefono',fecha_finDosificacion='$this->fecha_finDosificacion' where id_empresa=" . $id_empresa;
         return $this->CON->manipular($consulta);
     }
     function reinicioOT($id_empresa) {
